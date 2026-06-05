@@ -1,0 +1,17 @@
+apiVersion: concord.dev/v1
+kind: ControlPack
+metadata:
+  id: pci-dss
+  name: pci-dss
+  version: v0.1.0
+  framework_label: PCI DSS v4.0
+  attribution:
+    sources:
+      - prowler
+      - steampipe-powerpipe
+spec:
+  controls:
+    - PCI-DSS-3.5-encryption-key-management
+  evidence_sources:
+    - source: aws
+      version: ">=v0.1.0,<v1.0.0"
