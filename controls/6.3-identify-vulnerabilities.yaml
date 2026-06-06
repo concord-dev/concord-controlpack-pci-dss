@@ -1,0 +1,35 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-6.3-identify-vulnerabilities
+  name: vulnerabilities-identified-and-ranked
+  title: Vulnerabilities are identified, ranked, and addressed within SLA
+  framework: pci-dss
+  category: Vulnerability Management
+  severity: critical
+  tags: [pci-dss, vulnerabilities]
+  owners:
+    - team: security
+spec:
+  description: |
+    PCI DSS v4.0 §6.3 requires vulnerabilities to be identified and
+    addressed. Concord reads the Snyk org-issues export and verifies
+    no CRITICAL is open past 7 days, no HIGH past 30 days.
+  evidence:
+    - id: vuln_scan
+      source: snyk
+      type: org_issues
+      fixture: ../tests/fixtures/6.3-pass.json
+      params:
+        org_id: ${env.SNYK_ORG_ID}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_6_3
+    file: ../policies/r_6_3.rego
+  mappings:
+    pci_dss: ["6.3", "6.3.3"]
+    iso27001: ["A.8.8"]
+    nist_csf: ["ID.RA-01"]
+    nist_800_53: ["RA-5", "SI-2"]
+  status: stable
+  blocking: true

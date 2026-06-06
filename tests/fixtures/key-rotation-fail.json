@@ -1,11 +1,13 @@
 {
-  "aws_kms": {
-    "fetched_at": "2026-01-15T10:00:00Z",
-    "keys": [
-      {"key_id": "arn:aws:kms:us-east-1:123456789012:key/abc-pci",
-       "tags": {"pci": "true"},
-       "key_state": "Enabled",
-       "rotation_enabled": false}
-    ]
-  }
+  "fetched_at": "2026-01-15T10:00:00Z",
+  "keys": [
+    {
+      "key_id": "arn:aws:kms:us-east-1:123456789012:key/abc-pci",
+      "tags": {
+        "pci": "true"
+      },
+      "key_state": "Enabled",
+      "rotation_enabled": false
+    }
+  ]
 }

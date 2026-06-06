@@ -1,0 +1,35 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-8.3-strong-authentication
+  name: strong-mfa-everywhere
+  title: Every identity-provider user is enrolled in phishing-resistant MFA
+  framework: pci-dss
+  category: Authentication
+  severity: critical
+  tags: [pci-dss, mfa]
+  owners:
+    - team: it-security
+spec:
+  description: |
+    PCI DSS v4.0 §8.3 requires multi-factor authentication for all
+    access to the CDE. Concord verifies every active IdP user has
+    a phishing-resistant MFA factor enrolled.
+  evidence:
+    - id: okta_users
+      source: okta
+      type: users_mfa
+      fixture: ../tests/fixtures/8.3-pass.json
+      params:
+        org_url: ${env.OKTA_ORG_URL}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_8_3
+    file: ../policies/r_8_3.rego
+  mappings:
+    pci_dss: ["8.3", "8.4", "8.5"]
+    iso27001: ["A.8.5"]
+    nist_csf: ["PR.AA-03"]
+    hipaa: ["164.308(a)(5)(ii)(C)"]
+  status: stable
+  blocking: true

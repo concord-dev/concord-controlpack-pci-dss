@@ -1,0 +1,8 @@
+{
+  "buckets": [
+    {"name": "cardholder-vault", "tags": {"pci": "true"},
+     "policy": {"Statement": [
+       {"Effect": "Deny", "Action": "s3:*", "Condition": {"Bool": {"aws:SecureTransport": "false"}}}
+     ]}}
+  ]
+}

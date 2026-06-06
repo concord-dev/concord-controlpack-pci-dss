@@ -1,0 +1,10 @@
+{
+  "buckets": [
+    {"name": "cardholder-vault", "tags": {"pci": "true"},
+     "encryption": {"configured": true, "rules": [{"sse_algorithm": "AES256"}]}}
+  ],
+  "rds_instances": [
+    {"identifier": "card-db", "tags": {"pci": "true"}, "encryption": {"configured": false}}
+  ],
+  "ebs_volumes": []
+}

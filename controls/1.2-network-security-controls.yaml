@@ -1,0 +1,36 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-1.2-network-security-controls
+  name: network-security-no-wide-ingress
+  title: No security group allows wide-open ingress to sensitive ports
+  framework: pci-dss
+  category: Network Security
+  severity: critical
+  tags: [pci-dss, networks]
+  owners:
+    - team: platform
+spec:
+  description: |
+    PCI DSS v4.0 §1.2 requires network-security controls to restrict
+    inbound and outbound traffic to the cardholder-data environment.
+    Concord verifies no security group exposes management ports
+    (22, 3389, 3306, 5432, 6379) to 0.0.0.0/0.
+  evidence:
+    - id: security_groups
+      source: aws
+      type: security_groups
+      fixture: ../tests/fixtures/1.2-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_1_2
+    file: ../policies/r_1_2.rego
+  mappings:
+    pci_dss: ["1.2", "1.2.5", "1.2.6"]
+    iso27001: ["A.8.20", "A.8.22"]
+    nist_csf: ["PR.IR-01", "DE.CM-01"]
+    nist_800_53: ["AC-4", "SC-7"]
+  status: stable
+  blocking: true

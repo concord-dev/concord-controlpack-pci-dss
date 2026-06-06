@@ -1,0 +1,8 @@
+{
+  "cloudtrail": {"trails": [
+    {"name": "main", "is_multi_region_trail": true, "is_logging": true, "log_file_validation_enabled": true}
+  ]},
+  "log_groups": [
+    {"name": "/aws/prod/api", "is_production": true, "retention_in_days": 730}
+  ]
+}

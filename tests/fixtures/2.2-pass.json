@@ -1,0 +1,4 @@
+{
+  "active_regions": ["us-east-1"],
+  "recorders": [{"region": "us-east-1", "recording": true, "all_supported": true}]
+}

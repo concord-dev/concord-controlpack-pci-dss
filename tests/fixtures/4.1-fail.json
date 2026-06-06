@@ -1,0 +1,6 @@
+{
+  "buckets": [
+    {"name": "cardholder-vault", "tags": {"pci": "true"},
+     "policy": {"Statement": []}}
+  ]
+}

@@ -1,0 +1,36 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-10.5-audit-trails
+  name: audit-trails-retained-and-secured
+  title: CloudTrail is multi-region with log-file validation; CloudWatch logs retained ≥ 1 year
+  framework: pci-dss
+  category: Logging
+  severity: critical
+  tags: [pci-dss, logging, audit]
+  owners:
+    - team: security
+spec:
+  description: |
+    PCI DSS v4.0 §10.5 requires audit-log history to be retained for
+    at least 12 months. Concord verifies CloudTrail covers every region
+    with log-file validation, and that CloudWatch Logs production
+    groups have ≥ 365 day retention.
+  evidence:
+    - id: audit_trail
+      source: aws
+      type: audit_trail_status
+      fixture: ../tests/fixtures/10.5-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_10_5
+    file: ../policies/r_10_5.rego
+  mappings:
+    pci_dss: ["10.2", "10.5", "10.5.1"]
+    iso27001: ["A.8.15", "A.8.16"]
+    nist_csf: ["DE.AE-03"]
+    hipaa: ["164.312(b)"]
+  status: stable
+  blocking: true

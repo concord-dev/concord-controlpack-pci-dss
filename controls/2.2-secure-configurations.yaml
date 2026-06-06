@@ -1,0 +1,34 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-2.2-secure-configurations
+  name: secure-configurations-tracked
+  title: AWS Config recorder is enabled, capturing baseline configuration
+  framework: pci-dss
+  category: Secure Configurations
+  severity: high
+  tags: [pci-dss, config]
+  owners:
+    - team: platform
+spec:
+  description: |
+    PCI DSS v4.0 §2.2 requires system components to be configured
+    securely with documented standards. Concord verifies AWS Config
+    recorder is enabled in every active region.
+  evidence:
+    - id: config_recorder
+      source: aws
+      type: config_recorder_status
+      fixture: ../tests/fixtures/2.2-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_2_2
+    file: ../policies/r_2_2.rego
+  mappings:
+    pci_dss: ["2.2"]
+    iso27001: ["A.5.23"]
+    nist_csf: ["PR.PS-01"]
+  status: stable
+  blocking: true

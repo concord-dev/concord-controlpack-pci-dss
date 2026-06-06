@@ -3,15 +3,34 @@ kind: ControlPack
 metadata:
   id: pci-dss
   name: pci-dss
-  version: v0.1.0
+  version: v0.2.0
   framework_label: PCI DSS v4.0
   attribution:
     sources:
       - prowler
       - steampipe-powerpipe
+      - aws-audit-manager
 spec:
   controls:
+    - PCI-DSS-1.2-network-security-controls
+    - PCI-DSS-2.2-secure-configurations
+    - PCI-DSS-3.4-render-pan-unreadable
     - PCI-DSS-3.5-encryption-key-management
+    - PCI-DSS-4.1-strong-cryptography-transit
+    - PCI-DSS-5.2-anti-malware
+    - PCI-DSS-6.3-identify-vulnerabilities
+    - PCI-DSS-7.2-access-restriction
+    - PCI-DSS-8.3-strong-authentication
+    - PCI-DSS-9.4-media-protection
+    - PCI-DSS-10.5-audit-trails
+    - PCI-DSS-11.3-vulnerability-scanning
+    - PCI-DSS-12.1-information-security-policy
   evidence_sources:
     - source: aws
+      version: ">=v0.1.0,<v1.0.0"
+    - source: okta
+      version: ">=v0.1.0,<v1.0.0"
+    - source: snyk
+      version: ">=v0.1.0,<v1.0.0"
+    - source: attestation
       version: ">=v0.1.0,<v1.0.0"

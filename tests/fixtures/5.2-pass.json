@@ -1,0 +1,6 @@
+{
+  "active_regions": ["us-east-1"],
+  "guardduty_detectors": [{"region": "us-east-1", "status": "ENABLED"}],
+  "inspector_account_enabled": true,
+  "inspector_resource_scans": ["EC2", "ECR"]
+}

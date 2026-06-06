@@ -1,0 +1,36 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-7.2-access-restriction
+  name: least-privilege-admins-bounded
+  title: IAM administrator count is bounded; no long-lived admin keys
+  framework: pci-dss
+  category: Access Control
+  severity: critical
+  tags: [pci-dss, access-control]
+  owners:
+    - team: it-security
+spec:
+  description: |
+    PCI DSS v4.0 §7.2 requires access to system components to be
+    restricted to authorised users and managed by an access-control
+    system that defaults to deny-all. Concord verifies the IAM
+    administrator pool is bounded and uses no static credentials.
+  evidence:
+    - id: iam_admins
+      source: aws
+      type: iam_privileged_principals
+      fixture: ../tests/fixtures/7.2-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_7_2
+    file: ../policies/r_7_2.rego
+  mappings:
+    pci_dss: ["7.2", "7.3"]
+    iso27001: ["A.8.2"]
+    nist_csf: ["PR.AA-05"]
+    nist_800_53: ["AC-6"]
+  status: stable
+  blocking: true

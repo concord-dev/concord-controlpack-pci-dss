@@ -1,0 +1,36 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-4.1-strong-cryptography-transit
+  name: tls-enforced-on-transit
+  title: S3 buckets enforce TLS via bucket policy
+  framework: pci-dss
+  category: Encryption in Transit
+  severity: critical
+  tags: [pci-dss, encryption, tls]
+  owners:
+    - team: platform
+spec:
+  description: |
+    PCI DSS v4.0 §4.1 requires strong cryptography (TLS 1.2+) to be
+    used during transmission of cardholder data over open networks.
+    Concord verifies every S3 bucket tagged pci=true carries a bucket
+    policy that denies non-TLS requests.
+  evidence:
+    - id: bucket_policies
+      source: aws
+      type: s3_bucket_policy
+      fixture: ../tests/fixtures/4.1-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_4_1
+    file: ../policies/r_4_1.rego
+  mappings:
+    pci_dss: ["4.1", "4.2"]
+    iso27001: ["A.8.24"]
+    nist_csf: ["PR.DS-02"]
+    hipaa: ["164.312(e)(1)"]
+  status: stable
+  blocking: true

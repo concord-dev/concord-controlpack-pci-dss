@@ -1,0 +1,10 @@
+{
+  "kind": "media_handling",
+  "signature_verified": true,
+  "attested_fields": {
+    "approval_date": "2026-01-15",
+    "last_reviewed_at": "2026-04-01",
+    "destruction_method": "nist_800_88_purge",
+    "disposal_log": [{"date": "2026-03-12", "device_id": "LAP-12"}]
+  }
+}

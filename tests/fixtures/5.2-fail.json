@@ -1,0 +1,6 @@
+{
+  "active_regions": ["us-east-1"],
+  "guardduty_detectors": [],
+  "inspector_account_enabled": false,
+  "inspector_resource_scans": []
+}

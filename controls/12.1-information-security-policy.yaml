@@ -1,0 +1,34 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-12.1-information-security-policy
+  name: information-security-policy-current
+  title: Information security policy is documented and reviewed annually
+  framework: pci-dss
+  category: Governance
+  severity: high
+  tags: [pci-dss, governance, policy]
+  owners:
+    - team: it-security
+spec:
+  description: |
+    PCI DSS v4.0 §12.1 requires an information-security policy to be
+    established, published, maintained, and reviewed at least once
+    every 12 months. Concord reads a cosigned policy attestation.
+  evidence:
+    - id: attestation
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/12.1-pass.json
+      params:
+        kind: information_security_policy
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_12_1
+    file: ../policies/r_12_1.rego
+  mappings:
+    pci_dss: ["12.1", "12.1.1"]
+    iso27001: ["A.5.1"]
+    nist_csf: ["GV.PO-01"]
+  status: stable
+  blocking: true

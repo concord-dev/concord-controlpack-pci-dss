@@ -1,0 +1,35 @@
+apiVersion: concord.dev/v1
+kind: Control
+metadata:
+  id: PCI-DSS-3.4-render-pan-unreadable
+  name: cardholder-storage-kms-encrypted
+  title: Storage of cardholder data is encrypted with KMS
+  framework: pci-dss
+  category: Cardholder Data
+  severity: critical
+  tags: [pci-dss, encryption, pan]
+  owners:
+    - team: platform
+spec:
+  description: |
+    PCI DSS v4.0 §3.4 requires the PAN to be rendered unreadable wherever
+    it is stored. Concord verifies every S3 bucket / RDS instance tagged
+    pci=true is KMS-encrypted with a customer-managed key.
+  evidence:
+    - id: pci_encryption
+      source: aws
+      type: storage_encryption
+      fixture: ../tests/fixtures/3.4-pass.json
+      params:
+        region: ${env.AWS_REGION}
+  policy:
+    engine: rego
+    package: concord.pci_dss.r_3_4
+    file: ../policies/r_3_4.rego
+  mappings:
+    pci_dss: ["3.4", "3.4.1", "3.4.2"]
+    iso27001: ["A.8.24"]
+    soc2: ["CC6.7"]
+    hipaa: ["164.312(a)(2)(iv)"]
+  status: stable
+  blocking: true
