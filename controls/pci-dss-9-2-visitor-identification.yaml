@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-9.2-visitor-identification
+  name: pci-dss-9-2-visitor-identification
+  title: Visitors are identified, escorted, and access is logged in CDE
+  framework: pci-dss
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-9.2-visitor-identification enforces.
+
+  evidence:
+    - id: pci_dss_9_2_visitor_identification
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-9-2-visitor-identification-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_9_2_visitor_identification
+    file: ../policies/pci-dss-9-2-visitor-identification.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-9-2-visitor-identification.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

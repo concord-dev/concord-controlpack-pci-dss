@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-11.1-wireless-access-points
+  name: pci-dss-11-1-wireless-access-points
+  title: Wireless access points are tested at least quarterly to detect rogues
+  framework: pci-dss
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-11.1-wireless-access-points enforces.
+
+  evidence:
+    - id: pci_dss_11_1_wireless_access_points
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-11-1-wireless-access-points-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_11_1_wireless_access_points
+    file: ../policies/pci-dss-11-1-wireless-access-points.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-11-1-wireless-access-points.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

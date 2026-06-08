@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-1.4.1-stateful-inspection
+  name: pci-dss-1-4-1-stateful-inspection
+  title: Stateful inspection is enforced on all incoming and outgoing connections
+  framework: pci-dss
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-1.4.1-stateful-inspection enforces.
+
+  evidence:
+    - id: pci_dss_1_4_1_stateful_inspection
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-1-4-1-stateful-inspection-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_1_4_1_stateful_inspection
+    file: ../policies/pci-dss-1-4-1-stateful-inspection.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-1-4-1-stateful-inspection.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

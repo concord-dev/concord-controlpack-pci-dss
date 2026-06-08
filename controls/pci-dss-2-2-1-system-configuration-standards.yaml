@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-2.2.1-system-configuration-standards
+  name: pci-dss-2-2-1-system-configuration-standards
+  title: Configuration standards exist and are aligned with CIS / vendor benchmarks
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-2.2.1-system-configuration-standards enforces.
+
+  evidence:
+    - id: pci_dss_2_2_1_system_configuration_standards
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-2-2-1-system-configuration-standards-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_2_2_1_system_configuration_standards
+    file: ../policies/pci-dss-2-2-1-system-configuration-standards.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-2-2-1-system-configuration-standards.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

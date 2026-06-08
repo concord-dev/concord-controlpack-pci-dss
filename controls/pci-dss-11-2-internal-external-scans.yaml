@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-11.2-internal-external-scans
+  name: pci-dss-11-2-internal-external-scans
+  title: Internal and external vulnerability scans are run at least quarterly
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-11.2-internal-external-scans enforces.
+
+  evidence:
+    - id: pci_dss_11_2_internal_external_scans
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-11-2-internal-external-scans-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_11_2_internal_external_scans
+    file: ../policies/pci-dss-11-2-internal-external-scans.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-11-2-internal-external-scans.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

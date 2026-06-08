@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-11.4-intrusion-detection
+  name: pci-dss-11-4-intrusion-detection
+  title: IDS/IPS monitors all traffic into the cardholder data environment
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-11.4-intrusion-detection enforces.
+
+  evidence:
+    - id: pci_dss_11_4_intrusion_detection
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-11-4-intrusion-detection-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_11_4_intrusion_detection
+    file: ../policies/pci-dss-11-4-intrusion-detection.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-11-4-intrusion-detection.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

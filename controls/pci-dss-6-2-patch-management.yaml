@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-6.2-patch-management
+  name: pci-dss-6-2-patch-management
+  title: Critical security patches are applied within 30 days
+  framework: pci-dss
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-6.2-patch-management enforces.
+
+  evidence:
+    - id: pci_dss_6_2_patch_management
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-6-2-patch-management-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_6_2_patch_management
+    file: ../policies/pci-dss-6-2-patch-management.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-6-2-patch-management.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

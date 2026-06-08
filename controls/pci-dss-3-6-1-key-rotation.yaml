@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-3.6.1-key-rotation
+  name: pci-dss-3-6-1-key-rotation
+  title: Cryptographic keys are rotated at least annually
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-3.6.1-key-rotation enforces.
+
+  evidence:
+    - id: pci_dss_3_6_1_key_rotation
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-3-6-1-key-rotation-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_3_6_1_key_rotation
+    file: ../policies/pci-dss-3-6-1-key-rotation.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-3-6-1-key-rotation.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

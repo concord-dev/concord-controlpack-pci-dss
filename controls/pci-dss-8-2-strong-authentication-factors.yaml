@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-8.2-strong-authentication-factors
+  name: pci-dss-8-2-strong-authentication-factors
+  title: Authentication uses at least two factors for remote and admin access
+  framework: pci-dss
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-8.2-strong-authentication-factors enforces.
+
+  evidence:
+    - id: pci_dss_8_2_strong_authentication_factors
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-8-2-strong-authentication-factors-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_8_2_strong_authentication_factors
+    file: ../policies/pci-dss-8-2-strong-authentication-factors.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-8-2-strong-authentication-factors.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

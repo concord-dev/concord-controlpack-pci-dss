@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-2.2.5-disable-unnecessary-services
+  name: pci-dss-2-2-5-disable-unnecessary-services
+  title: Unnecessary services, ports, and protocols are disabled on every host
+  framework: pci-dss
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-2.2.5-disable-unnecessary-services enforces.
+
+  evidence:
+    - id: pci_dss_2_2_5_disable_unnecessary_services
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-2-2-5-disable-unnecessary-services-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_2_2_5_disable_unnecessary_services
+    file: ../policies/pci-dss-2-2-5-disable-unnecessary-services.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-2-2-5-disable-unnecessary-services.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-3.5.1-key-management-procedures
+  name: pci-dss-3-5-1-key-management-procedures
+  title: Cryptographic key management procedures cover generation, distribution, storage, rotation, and destruction
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-3.5.1-key-management-procedures enforces.
+
+  evidence:
+    - id: pci_dss_3_5_1_key_management_procedures
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-3-5-1-key-management-procedures-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_3_5_1_key_management_procedures
+    file: ../policies/pci-dss-3-5-1-key-management-procedures.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-3-5-1-key-management-procedures.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

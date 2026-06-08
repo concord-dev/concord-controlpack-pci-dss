@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-10.7-audit-trail-retention
+  name: pci-dss-10-7-audit-trail-retention
+  title: Audit trail history is retained for at least one year with three months immediately available
+  framework: pci-dss
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-10.7-audit-trail-retention enforces.
+
+  evidence:
+    - id: pci_dss_10_7_audit_trail_retention
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-10-7-audit-trail-retention-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_10_7_audit_trail_retention
+    file: ../policies/pci-dss-10-7-audit-trail-retention.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-10-7-audit-trail-retention.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

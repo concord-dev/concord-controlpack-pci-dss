@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-12.3-acceptable-use-policy
+  name: pci-dss-12-3-acceptable-use-policy
+  title: Acceptable use policy for critical technologies is documented and signed
+  framework: pci-dss
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-12.3-acceptable-use-policy enforces.
+
+  evidence:
+    - id: pci_dss_12_3_acceptable_use_policy
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-12-3-acceptable-use-policy-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_12_3_acceptable_use_policy
+    file: ../policies/pci-dss-12-3-acceptable-use-policy.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-12-3-acceptable-use-policy.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

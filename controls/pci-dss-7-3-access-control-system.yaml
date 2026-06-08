@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-7.3-access-control-system
+  name: pci-dss-7-3-access-control-system
+  title: Access control system covers all system components and defaults to deny-all
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-7.3-access-control-system enforces.
+
+  evidence:
+    - id: pci_dss_7_3_access_control_system
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-7-3-access-control-system-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_7_3_access_control_system
+    file: ../policies/pci-dss-7-3-access-control-system.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-7-3-access-control-system.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

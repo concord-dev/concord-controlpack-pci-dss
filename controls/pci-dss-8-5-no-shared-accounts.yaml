@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-8.5-no-shared-accounts
+  name: pci-dss-8-5-no-shared-accounts
+  title: Shared, group, or generic accounts are not used for system administration
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-8.5-no-shared-accounts enforces.
+
+  evidence:
+    - id: pci_dss_8_5_no_shared_accounts
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-8-5-no-shared-accounts-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_8_5_no_shared_accounts
+    file: ../policies/pci-dss-8-5-no-shared-accounts.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-8-5-no-shared-accounts.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

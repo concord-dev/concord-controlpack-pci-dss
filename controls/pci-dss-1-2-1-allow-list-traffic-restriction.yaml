@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-1.2.1-allow-list-traffic-restriction
+  name: pci-dss-1-2-1-allow-list-traffic-restriction
+  title: Network ACLs and security groups restrict traffic to only what is necessary
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-1.2.1-allow-list-traffic-restriction enforces.
+
+  evidence:
+    - id: pci_dss_1_2_1_allow_list_traffic_restriction
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-1-2-1-allow-list-traffic-restriction-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_1_2_1_allow_list_traffic_restriction
+    file: ../policies/pci-dss-1-2-1-allow-list-traffic-restriction.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-1-2-1-allow-list-traffic-restriction.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

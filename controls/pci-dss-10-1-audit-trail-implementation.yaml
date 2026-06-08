@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-10.1-audit-trail-implementation
+  name: pci-dss-10-1-audit-trail-implementation
+  title: All system components produce audit trails that link to individual users
+  framework: pci-dss
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-10.1-audit-trail-implementation enforces.
+
+  evidence:
+    - id: pci_dss_10_1_audit_trail_implementation
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/pci-dss-10-1-audit-trail-implementation-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_10_1_audit_trail_implementation
+    file: ../policies/pci-dss-10-1-audit-trail-implementation.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-10-1-audit-trail-implementation.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

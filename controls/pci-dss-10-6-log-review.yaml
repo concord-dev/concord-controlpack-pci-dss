@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: PCI-DSS-10.6-log-review
+  name: pci-dss-10-6-log-review
+  title: Logs and security events are reviewed at least daily for anomalies
+  framework: pci-dss
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what PCI-DSS-10.6-log-review enforces.
+
+  evidence:
+    - id: pci_dss_10_6_log_review
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/pci-dss-10-6-log-review-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.pci_dss.pci_dss_10_6_log_review
+    file: ../policies/pci-dss-10-6-log-review.rego
+
+  remediation:
+    runbook: docs/remediation/pci-dss-10-6-log-review.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

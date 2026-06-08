@@ -3,15 +3,19 @@ kind: ControlPack
 metadata:
   id: pci-dss
   name: pci-dss
-  version: v0.2.0
+  version: v0.3.0
   framework_label: PCI DSS v4.0
   attribution:
     sources:
       - prowler
       - steampipe-powerpipe
       - aws-audit-manager
+      - pci-ssc-guidance
 spec:
   controls:
+    - PCI-DSS-10.5-audit-trails
+    - PCI-DSS-11.3-vulnerability-scanning
+    - PCI-DSS-12.1-information-security-policy
     - PCI-DSS-1.2-network-security-controls
     - PCI-DSS-2.2-secure-configurations
     - PCI-DSS-3.4-render-pan-unreadable
@@ -22,15 +26,48 @@ spec:
     - PCI-DSS-7.2-access-restriction
     - PCI-DSS-8.3-strong-authentication
     - PCI-DSS-9.4-media-protection
-    - PCI-DSS-10.5-audit-trails
-    - PCI-DSS-11.3-vulnerability-scanning
-    - PCI-DSS-12.1-information-security-policy
+    - PCI-DSS-10.1-audit-trail-implementation
+    - PCI-DSS-10.2-events-logged
+    - PCI-DSS-10.3-audit-trail-entries-detail
+    - PCI-DSS-10.6-log-review
+    - PCI-DSS-10.7-audit-trail-retention
+    - PCI-DSS-1.1.1-network-config-change-control
+    - PCI-DSS-11.1-wireless-access-points
+    - PCI-DSS-11.2-internal-external-scans
+    - PCI-DSS-11.4-intrusion-detection
+    - PCI-DSS-12.10-incident-response-plan
+    - PCI-DSS-1.2.1-allow-list-traffic-restriction
+    - PCI-DSS-12.2-risk-assessment-process
+    - PCI-DSS-12.3-acceptable-use-policy
+    - PCI-DSS-1.3.1-perimeter-firewall
+    - PCI-DSS-1.4.1-stateful-inspection
+    - PCI-DSS-2.1.1-default-passwords-changed
+    - PCI-DSS-2.2.1-system-configuration-standards
+    - PCI-DSS-2.2.5-disable-unnecessary-services
+    - PCI-DSS-2.3-encrypt-non-console-admin
+    - PCI-DSS-3.1-cardholder-data-retention
+    - PCI-DSS-3.2-no-store-sensitive-authentication-data
+    - PCI-DSS-3.5.1-key-management-procedures
+    - PCI-DSS-3.6.1-key-rotation
+    - PCI-DSS-4.2-no-end-user-messaging
+    - PCI-DSS-6.1-vulnerability-mgmt-process
+    - PCI-DSS-6.2-patch-management
+    - PCI-DSS-6.4-change-control
+    - PCI-DSS-6.5-secure-coding-training
+    - PCI-DSS-6.6-web-application-firewall
+    - PCI-DSS-7.1-need-to-know-access
+    - PCI-DSS-7.3-access-control-system
+    - PCI-DSS-8.1-user-identification
+    - PCI-DSS-8.2-strong-authentication-factors
+    - PCI-DSS-8.5-no-shared-accounts
+    - PCI-DSS-8.6-multi-factor-authentication
+    - PCI-DSS-9.1-physical-access-controls
+    - PCI-DSS-9.2-visitor-identification
+    - PCI-DSS-9.5-secure-media-storage
   evidence_sources:
     - source: aws
       version: ">=v0.1.0,<v1.0.0"
-    - source: okta
-      version: ">=v0.1.0,<v1.0.0"
-    - source: snyk
+    - source: github
       version: ">=v0.1.0,<v1.0.0"
     - source: attestation
       version: ">=v0.1.0,<v1.0.0"
