@@ -4,37 +4,65 @@ kind: Control
 metadata:
   id: PCI-DSS-3.1-cardholder-data-retention
   name: pci-dss-3-1-cardholder-data-retention
-  title: Cardholder data retention and disposal policies are documented and enforced
+  title: Cardholder data retention and disposal are governed by a current, signed policy
   framework: pci-dss
+  category: Protect Cardholder Data
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - data-retention
+    - disposal
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-3.1-cardholder-data-retention enforces.
+    PCI DSS v4.0 Requirement 3.1 (and 3.2.1) requires cardholder data to be
+    kept to the minimum necessary and disposed of once it is no longer
+    required for legal, regulatory, or business reasons, governed by a
+    documented data-retention and disposal policy that is reviewed at a
+    defined cadence. Concord reads the version-controlled retention policy
+    from the repository and confirms it declares a retention period, an
+    approved disposal method, a review cadence, and a recent signed review.
+
+  rationale: |
+    Cardholder data that outlives its business purpose is pure liability:
+    it expands the audit scope and the blast radius of any breach without
+    adding value. A retention policy stored as a spreadsheet or a slide
+    silently goes stale, so Concord anchors the evidence to a git-versioned
+    document whose freshness and signature can be verified on every run,
+    turning "we have a policy" into "the policy is current and approved".
 
   evidence:
-    - id: pci_dss_3_1_cardholder_data_retention
-      source: attestation
-      type: policy_attestation
+    - id: retention_policy
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-3-1-cardholder-data-retention-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/pci/cardholder-data-retention.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_3_1_cardholder_data_retention
+    package: concord.pci_dss.r_3_1
     file: ../policies/pci-dss-3-1-cardholder-data-retention.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-3-1-cardholder-data-retention.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "3.1"
+      - "3.2.1"
+    iso27001:
+      - "A.8.10"
+    soc2:
+      - "C1.2"
+
+  status: stable
+  blocking: true

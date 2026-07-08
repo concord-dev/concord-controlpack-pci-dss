@@ -1,11 +1,19 @@
 {
-  "pci_dss_12_3_acceptable_use_policy": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["policies/governance"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/governance/acceptable-use-policy.yaml",
+      "owner": "Chief Information Security Officer",
+      "approval_date": "2026-01-20",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 30,
+      "approved_technologies": [
+        "Company laptops"
+      ],
+      "usage_rules": "",
+      "explicit_approval_required": false,
+      "signature_verified": false
+    }
+  ]
 }

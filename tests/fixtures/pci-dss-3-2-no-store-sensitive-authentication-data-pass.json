@@ -1,11 +1,16 @@
 {
-  "pci_dss_3_2_no_store_sensitive_authentication_data": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/pci"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/pci/sensitive-authentication-data.md",
+      "title": "No-Storage of Sensitive Authentication Data Attestation",
+      "sad_storage_prohibited": true,
+      "data_flow_reviewed_at": "2026-05-20T00:00:00Z",
+      "scanning_tool": "Nightfall DLP + custom PAN/track-data regex scan across S3, RDS, and CloudWatch Logs",
+      "last_reviewed_at": "2026-06-02T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "head-of-payments@acme.com"
+    }
+  ]
 }

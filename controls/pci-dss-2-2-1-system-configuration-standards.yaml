@@ -6,35 +6,59 @@ metadata:
   name: pci-dss-2-2-1-system-configuration-standards
   title: Configuration standards exist and are aligned with CIS / vendor benchmarks
   framework: pci-dss
+  category: Apply Secure Configurations to All System Components
   severity: high
-  tags: []
+  tags: [pci-dss, secure-configuration, cis-benchmark, aws-config]
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-2.2.1-system-configuration-standards enforces.
+    PCI DSS v4.0 Requirement 2.2.1 requires configuration standards to be
+    developed, implemented, and maintained for all system components, and
+    that those standards are consistent with industry-accepted hardening
+    benchmarks (for example CIS or vendor guidance) and cover all known
+    security vulnerabilities. Concord verifies this technically in AWS: the
+    AWS Config recorder must be enabled and recording in every active region
+    so baseline configuration is continuously captured, and at least one
+    benchmark-aligned Config conformance pack must be deployed and reporting
+    a COMPLIANT state, proving the standard is not just documented but
+    enforced against live resources.
+
+  rationale: |
+    A documented hardening standard provides no assurance unless deviations
+    from it are continuously detected. Enabling the AWS Config recorder gives
+    an authoritative, tamper-evident record of every resource configuration,
+    and mapping a CIS- or PCI-aligned conformance pack onto that record turns
+    the written standard into automated, evidence-backed detection. If the
+    recorder is disabled in a region, drift in that region is invisible; if a
+    conformance pack reports NON_COMPLIANT, live resources have diverged from
+    the benchmark and must be remediated. Checking both together prevents the
+    false assurance of a standard that exists only on paper.
 
   evidence:
-    - id: pci_dss_2_2_1_system_configuration_standards
-      source: attestation
-      type: policy_attestation
+    - id: config_standards
+      source: aws
+      type: config_conformance_status
       fixture: ../tests/fixtures/pci-dss-2-2-1-system-configuration-standards-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
     package: concord.pci_dss.pci_dss_2_2_1_system_configuration_standards
     file: ../policies/pci-dss-2-2-1-system-configuration-standards.rego
 
+  mappings:
+    pci_dss: ["2.2.1"]
+    soc2: ["CC7.1"]
+    nist_800_53: ["CM-2", "CM-6"]
+    iso27001: ["A.8.9"]
+
   remediation:
     runbook: docs/remediation/pci-dss-2-2-1-system-configuration-standards.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

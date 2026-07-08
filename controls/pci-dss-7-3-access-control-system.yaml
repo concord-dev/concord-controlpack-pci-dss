@@ -3,36 +3,71 @@ kind: Control
 
 metadata:
   id: PCI-DSS-7.3-access-control-system
-  name: pci-dss-7-3-access-control-system
+  name: access-control-deny-by-default
   title: Access control system covers all system components and defaults to deny-all
   framework: pci-dss
+  category: Implement Strong Access Control Measures
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - access-control
+    - iam
+    - deny-by-default
   owners:
-    - team: concord-dev
+    - team: it-security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-7.3-access-control-system enforces.
+    PCI DSS v4.0 Requirement 7.3 requires access to system components and
+    cardholder data to be managed by an access-control system that covers all
+    components, assigns privileges by job classification, and is set to
+    "deny all" by default (7.3.3). Concord inspects the effect statements of
+    every attached IAM policy and fails any statement that subverts that
+    deny-by-default posture: an Allow of Action "*" on Resource "*"
+    (an explicit allow-all), or an Allow that uses NotAction or NotResource,
+    which inverts the model into "allow everything except" and re-opens the
+    default-deny baseline.
+
+  rationale: |
+    AWS IAM is deny-by-default only until a single over-broad Allow statement
+    negates it. The two most dangerous patterns are an outright Allow of
+    "*"/"*" and the subtle Allow + NotAction/NotResource idiom, which grants
+    every action or resource except a short deny-list and therefore fails
+    open whenever a new service or resource appears. Assessors verifying 7.3.3
+    look precisely for statements that break the default-deny stance. The
+    control fails closed: with no policy evidence it denies rather than
+    presuming the access-control system defaults to deny.
 
   evidence:
-    - id: pci_dss_7_3_access_control_system
+    - id: iam_policies
       source: aws
-      type: aws_resource_inventory
+      type: iam_policies
       fixture: ../tests/fixtures/pci-dss-7-3-access-control-system-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_7_3_access_control_system
+    package: concord.pci_dss.access_control_system
     file: ../policies/pci-dss-7-3-access-control-system.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-7-3-access-control-system.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "7.3"
+      - "7.3.3"
+    soc2:
+      - "CC6.1"
+      - "CC6.3"
+    nist_800_53:
+      - "AC-3"
+      - "AC-6"
+    cis_aws:
+      - "1.16"
+
+  status: stable
+  blocking: true

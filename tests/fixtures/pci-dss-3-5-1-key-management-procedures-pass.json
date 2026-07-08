@@ -1,11 +1,18 @@
 {
-  "pci_dss_3_5_1_key_management_procedures": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/pci"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/pci/key-management-procedures.md",
+      "title": "Cryptographic Key Management Procedures",
+      "key_generation": "Keys generated inside AWS KMS HSMs (FIPS 140-2 Level 3); no key material leaves the HSM boundary.",
+      "key_distribution": "Access granted only via IAM key policies and grants; no key material is exported or shared out of band.",
+      "key_storage": "Key material stored only in AWS KMS; envelope-encrypted data keys never persisted in plaintext.",
+      "key_rotation": "Automatic annual rotation enabled on all pci=true CMKs; verified by control PCI-DSS-3.6.1.",
+      "key_destruction": "Retired keys scheduled for deletion with a 30-day waiting period after confirming no ciphertext depends on them.",
+      "last_reviewed_at": "2026-06-03T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "platform-lead@acme.com"
+    }
+  ]
 }

@@ -3,36 +3,69 @@ kind: Control
 
 metadata:
   id: PCI-DSS-8.6-multi-factor-authentication
-  name: pci-dss-8-6-multi-factor-authentication
+  name: mfa-for-cde-access
   title: MFA is enforced for all non-console access into the cardholder data environment
   framework: pci-dss
+  category: Implement Strong Access Control Measures
   severity: critical
-  tags: []
+  tags:
+    - pci-dss
+    - authentication
+    - mfa
+    - iam
   owners:
-    - team: concord-dev
+    - team: it-security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-8.6-multi-factor-authentication enforces.
+    PCI DSS v4.0 Requirement 8.6 (with 8.4.2 and 8.5.1) requires multi-factor
+    authentication for all access into the cardholder data environment,
+    including non-console and administrative access paths. Concord reads the
+    AWS IAM credential report and denies any identity that can reach the CDE
+    without a registered MFA device: a console-enabled user whose mfa_active
+    is not true, and a user that relies on an active long-lived access key
+    while the identity carries no MFA device. Missing MFA fields are treated
+    as no MFA so the control never fails open.
+
+  rationale: |
+    Requirement 8.6 closes the gaps left by console-only MFA checks: attackers
+    increasingly pivot through long-lived access keys and other non-interactive
+    paths that never prompt for a second factor. By flagging both console
+    identities without MFA and identities whose only credential is an active
+    access key with no MFA device, Concord surfaces every unprotected route
+    into the CDE. The check fails closed on the second factor — an mfa_active
+    value that is false, null, or absent all deny, and an absent credential
+    report denies outright.
 
   evidence:
-    - id: pci_dss_8_6_multi_factor_authentication
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/pci-dss-8-6-multi-factor-authentication-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_8_6_multi_factor_authentication
+    package: concord.pci_dss.multi_factor_authentication
     file: ../policies/pci-dss-8-6-multi-factor-authentication.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-8-6-multi-factor-authentication.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "8.6"
+      - "8.4.2"
+      - "8.5.1"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "IA-2(1)"
+    cis_aws:
+      - "1.10"
+
+  status: stable
+  blocking: true

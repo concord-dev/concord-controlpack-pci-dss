@@ -1,16 +1,40 @@
-package concord.pci_dss.pci_dss_10_1_audit_trail_implementation
+package concord.pci_dss.r_10_1
 
 import rego.v1
-import data.concord.lib.collection
-import data.concord.lib.evidence
+
+# PCI DSS Requirement 10.1 — audit trails link all access to system components
+# to individual users. Fail closed unless a multi-region CloudTrail trail is
+# enabled and actively logging.
+
+trails := input.audit_trail.cloudtrail.trails
 
 deny contains msg if {
-	not evidence.present(input, "pci_dss_10_1_audit_trail_implementation")
-	msg := "PCI-DSS-10.1-audit-trail-implementation: aws evidence missing"
+	not input.audit_trail
+	msg := "no audit-trail evidence collected"
 }
 
 deny contains msg if {
-	some r in input.pci_dss_10_1_audit_trail_implementation.resources
-	not r.compliant
-	msg := sprintf("PCI-DSS-10.1-audit-trail-implementation: resource %q is non-compliant (reason: %s)", [r.arn, r.reason])
+	input.audit_trail
+	count(trails) == 0
+	msg := "no CloudTrail trail is configured; system components do not produce an audit trail (PCI DSS Requirement 10.1)"
+}
+
+deny contains msg if {
+	input.audit_trail
+	count(trails) > 0
+	not has_multi_region_logging_trail
+	msg := "no multi-region CloudTrail trail is both enabled and logging; account activity is not linked to individual users (PCI DSS Requirement 10.1)"
+}
+
+deny contains msg if {
+	some trail in trails
+	trail.is_multi_region_trail
+	not trail.is_logging
+	msg := sprintf("multi-region CloudTrail trail %q is not currently logging; audit trail is incomplete (PCI DSS Requirement 10.1)", [trail.name])
+}
+
+has_multi_region_logging_trail if {
+	some trail in trails
+	trail.is_multi_region_trail
+	trail.is_logging
 }

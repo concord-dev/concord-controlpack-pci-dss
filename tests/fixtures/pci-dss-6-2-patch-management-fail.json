@@ -1,8 +1,20 @@
 {
-  "pci_dss_6_2_patch_management": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "instances": [
+    {
+      "instance_id": "i-0a1b2c3d4e5f60718",
+      "patch_group": "cde-web-tier",
+      "compliance_status": "COMPLIANT",
+      "missing_critical_count": 0,
+      "missing_security_count": 0,
+      "oldest_missing_critical_age_days": 0
+    },
+    {
+      "instance_id": "i-0f1e2d3c4b5a69788",
+      "patch_group": "cde-db-tier",
+      "compliance_status": "NON_COMPLIANT",
+      "missing_critical_count": 3,
+      "missing_security_count": 5,
+      "oldest_missing_critical_age_days": 74
+    }
+  ]
 }

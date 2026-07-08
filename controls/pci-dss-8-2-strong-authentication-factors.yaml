@@ -3,36 +3,66 @@ kind: Control
 
 metadata:
   id: PCI-DSS-8.2-strong-authentication-factors
-  name: pci-dss-8-2-strong-authentication-factors
+  name: two-factor-console-authentication
   title: Authentication uses at least two factors for remote and admin access
   framework: pci-dss
+  category: Implement Strong Access Control Measures
   severity: critical
-  tags: []
+  tags:
+    - pci-dss
+    - authentication
+    - mfa
+    - iam
   owners:
-    - team: concord-dev
+    - team: it-security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-8.2-strong-authentication-factors enforces.
+    PCI DSS v4.0 Requirement 8.2 with 8.4.1 requires that authentication for
+    interactive access — and all remote and administrative access — is
+    established with at least two distinct factors. For AWS console access
+    that means a password (something you know) plus a registered MFA device
+    (something you have). Concord reads the IAM credential report and fails
+    any console-enabled, non-root identity whose mfa_active flag is not true,
+    which leaves the account protected by a single factor.
+
+  rationale: |
+    Single-factor console access is the most common initial-access vector in
+    payment-environment breaches, and stolen or phished passwords are useless
+    to an attacker only when a second factor is required. The check fails
+    closed on the second factor: an mfa_active value that is false, null, or
+    absent all deny, so a truncated or partially collected credential report
+    can never be misread as "two factors present". The root account is
+    evaluated by Requirement 8.1 and surfaced here only as an advisory.
 
   evidence:
-    - id: pci_dss_8_2_strong_authentication_factors
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/pci-dss-8-2-strong-authentication-factors-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_8_2_strong_authentication_factors
+    package: concord.pci_dss.strong_authentication_factors
     file: ../policies/pci-dss-8-2-strong-authentication-factors.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-8-2-strong-authentication-factors.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "8.2"
+      - "8.4.1"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "IA-2(1)"
+    cis_aws:
+      - "1.10"
+
+  status: stable
+  blocking: true

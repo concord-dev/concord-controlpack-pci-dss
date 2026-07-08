@@ -1,11 +1,25 @@
 {
-  "pci_dss_9_1_physical_access_controls": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["policies/physical"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/physical/physical-access-controls.yaml",
+      "owner": "VP of Infrastructure Security",
+      "approval_date": "2026-01-12",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 30,
+      "access_control_measures": [
+        "Badge-reader entry to the cardholder data environment restricted to the physical-security ACL",
+        "Systems storing cardholder data housed in locked, individually keyed cages",
+        "24x7 CCTV coverage of all CDE entrances with 90-day recording retention"
+      ],
+      "authorized_roles": [
+        "infrastructure-engineer",
+        "facilities-security",
+        "on-call-sre"
+      ],
+      "access_log_retention": "Badge-in/badge-out events retained for 12 months in the SIEM and reviewed weekly by facilities-security",
+      "signature_verified": true
+    }
+  ]
 }

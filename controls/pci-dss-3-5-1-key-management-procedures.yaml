@@ -4,37 +4,69 @@ kind: Control
 metadata:
   id: PCI-DSS-3.5.1-key-management-procedures
   name: pci-dss-3-5-1-key-management-procedures
-  title: Cryptographic key management procedures cover generation, distribution, storage, rotation, and destruction
+  title: Key-management procedures cover generation, distribution, storage, rotation, and destruction
   framework: pci-dss
+  category: Protect Cardholder Data
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - kms
+    - key-management
+    - procedures
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-3.5.1-key-management-procedures enforces.
+    PCI DSS v4.0 Requirement 3.5.1 (aligned with 3.6/3.7) requires
+    documented and implemented procedures for managing the cryptographic
+    keys that protect stored account data across their full lifecycle:
+    secure generation, secure distribution, secure storage, rotation at the
+    end of the cryptoperiod, and retirement/destruction. Concord reads the
+    version-controlled key-management procedure document and confirms every
+    lifecycle stage is described, the document is current, and it is signed.
+
+  rationale: |
+    Enabling KMS rotation (Requirement 3.6.1) is necessary but not
+    sufficient: PCI also expects the human procedures around key custody to
+    be written down and followed, because most real key compromises come
+    from mishandled generation, distribution, or destruction rather than a
+    missing rotation flag. Verifying one field per lifecycle stage — and
+    denying per missing stage — makes a partially documented procedure fail
+    loudly instead of passing on the strength of the stages that happen to
+    be filled in.
 
   evidence:
-    - id: pci_dss_3_5_1_key_management_procedures
-      source: attestation
-      type: policy_attestation
+    - id: key_mgmt_procedures
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-3-5-1-key-management-procedures-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/pci/key-management-procedures.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_3_5_1_key_management_procedures
+    package: concord.pci_dss.r_3_5_1
     file: ../policies/pci-dss-3-5-1-key-management-procedures.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-3-5-1-key-management-procedures.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "3.5.1"
+      - "3.6.1"
+    nist_800_53:
+      - "SC-12"
+    iso27001:
+      - "A.8.24"
+    soc2:
+      - "C1.1"
+
+  status: stable
+  blocking: true

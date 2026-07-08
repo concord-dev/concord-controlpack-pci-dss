@@ -1,8 +1,27 @@
 {
-  "pci_dss_1_4_1_stateful_inspection": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-18T08:30:00Z",
+  "acls": [
+    {
+      "id": "acl-cde",
+      "vpc_id": "vpc-cde",
+      "is_default": false,
+      "entries": [
+        {"rule_number": 100, "egress": false, "protocol": "tcp", "from_port": 443, "to_port": 443, "cidr": "10.20.0.0/16", "action": "allow"},
+        {"rule_number": 200, "egress": false, "protocol": "-1", "cidr": "0.0.0.0/0", "action": "deny"},
+        {"rule_number": 100, "egress": true, "protocol": "tcp", "from_port": 443, "to_port": 443, "cidr": "10.20.0.0/16", "action": "allow"},
+        {"rule_number": 200, "egress": true, "protocol": "-1", "cidr": "0.0.0.0/0", "action": "deny"}
+      ]
+    },
+    {
+      "id": "acl-app",
+      "vpc_id": "vpc-cde",
+      "is_default": false,
+      "entries": [
+        {"rule_number": 100, "egress": false, "protocol": "tcp", "from_port": 8443, "to_port": 8443, "cidr": "10.10.0.0/16", "action": "allow"},
+        {"rule_number": 32767, "egress": false, "protocol": "all", "cidr": "0.0.0.0/0", "action": "deny"},
+        {"rule_number": 100, "egress": true, "protocol": "-1", "cidr": "10.0.0.0/8", "action": "allow"},
+        {"rule_number": 32767, "egress": true, "protocol": "all", "cidr": "0.0.0.0/0", "action": "deny"}
+      ]
+    }
+  ]
 }

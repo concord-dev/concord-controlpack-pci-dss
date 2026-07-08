@@ -4,35 +4,67 @@ kind: Control
 metadata:
   id: PCI-DSS-2.2.5-disable-unnecessary-services
   name: pci-dss-2-2-5-disable-unnecessary-services
-  title: Unnecessary services, ports, and protocols are disabled on every host
+  title: No security group permits unnecessary or insecure legacy services
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Build and Maintain a Secure Network and Systems
+  severity: high
+  tags:
+    - pci-dss
+    - secure-configuration
+    - hardening
+    - unnecessary-services
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-2.2.5-disable-unnecessary-services enforces.
+    PCI DSS v4.0 Requirement 2.2.5 requires that all unnecessary functionality,
+    including unnecessary services, protocols, daemons, and ports, is removed or
+    disabled as part of the system configuration standard. This control inspects
+    every security-group ruleset and reports any rule that permits a known
+    unnecessary or insecure legacy service, such as FTP, Telnet, TFTP, the
+    NetBIOS/SMB family, RPC/portmapper, NFS, rsync, VNC, or X11. A rule that
+    opens all ports and protocols is also reported, because it necessarily
+    exposes these services.
+  rationale: |
+    Every enabled service is attack surface, and legacy services such as Telnet,
+    FTP, and SMB carry credentials or data in the clear and are repeatedly
+    implicated in cardholder-data breaches. Assessors validating Requirement
+    2.2.5 expect the configuration standard to explicitly disable functionality
+    that is not needed; the fastest evidence that it has not been applied is a
+    firewall rule that still permits one of these services. Enumerating the
+    unnecessary service ports and failing closed on any "all ports" rule turns
+    that expectation into a concrete, repeatable check.
 
   evidence:
-    - id: pci_dss_2_2_5_disable_unnecessary_services
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/pci-dss-2-2-5-disable-unnecessary-services-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_2_2_5_disable_unnecessary_services
+    package: concord.pci_dss.r_2_2_5
     file: ../policies/pci-dss-2-2-5-disable-unnecessary-services.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-2-2-5-disable-unnecessary-services.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "2.2.5"
+      - "2.2.4"
+    nist_800_53:
+      - "CM-7"
+      - "CM-7(1)"
+    soc2:
+      - "CC6.6"
+    iso27001:
+      - "A.8.9"
+
+  status: stable
+  blocking: true

@@ -6,33 +6,58 @@ metadata:
   name: pci-dss-6-6-web-application-firewall
   title: Web-application firewall protects every public-facing web application
   framework: pci-dss
+  category: Develop and Maintain Secure Systems and Software
   severity: high
-  tags: []
+  tags: [pci-dss, waf, public-facing, network-protection]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-6.6-web-application-firewall enforces.
+    PCI DSS Requirement 6.6 requires public-facing web applications to be
+    protected against known attacks by an automated technical solution that
+    continually detects and prevents web-based attacks, such as a web-
+    application firewall (under PCI DSS v4.0 this is Requirement 6.4.1/6.4.2).
+    Concord verifies this technically by inventorying every public-facing web
+    entry point in AWS (internet-facing Application Load Balancers and enabled
+    CloudFront distributions) and confirming each one has an AWS WAF WebACL
+    associated. Internal, non-public resources are out of scope and are not
+    required to carry a WebACL.
+
+  rationale: |
+    Public-facing web applications are directly reachable by attackers and are
+    the primary target for injection, cross-site scripting, and other OWASP
+    Top 10 attacks against cardholder data. A WebACL provides the continuous,
+    automated inspection Requirement 6.6 demands, so an internet-facing load
+    balancer or CDN distribution with no WebACL is an unprotected entry point
+    into the environment. Concord evaluates each public endpoint individually
+    and fails closed: a resource is flagged unless it explicitly reports an
+    associated WebACL, so a missing or unreported association is treated as
+    unprotected rather than assumed safe.
 
   evidence:
-    - id: pci_dss_6_6_web_application_firewall
+    - id: waf_coverage
       source: aws
-      type: aws_resource_inventory
+      type: waf_coverage
       fixture: ../tests/fixtures/pci-dss-6-6-web-application-firewall-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
     package: concord.pci_dss.pci_dss_6_6_web_application_firewall
     file: ../policies/pci-dss-6-6-web-application-firewall.rego
 
+  mappings:
+    pci_dss: ["6.6", "6.4.1", "6.4.2"]
+    soc2: ["CC6.6"]
+    nist_800_53: ["SC-7", "SI-4"]
+    iso27001: ["A.8.20", "A.8.26"]
+
   remediation:
     runbook: docs/remediation/pci-dss-6-6-web-application-firewall.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 3h
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

@@ -1,11 +1,16 @@
 {
-  "pci_dss_4_2_no_end_user_messaging": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/pci"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/pci/pan-messaging-policy.md",
+      "title": "Prohibition on PAN in End-User Messaging",
+      "policy_prohibits_pan_messaging": true,
+      "channels_covered": ["email", "sms", "chat"],
+      "dlp_tooling": "Google Workspace DLP + Slack DLP with PAN detectors blocking and quarantining messages",
+      "last_reviewed_at": "2026-06-04T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "ciso@acme.com"
+    }
+  ]
 }

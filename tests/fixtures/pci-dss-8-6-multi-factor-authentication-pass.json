@@ -1,8 +1,28 @@
 {
-  "pci_dss_8_6_multi_factor_authentication": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "generated_at": "2026-06-20T09:55:00Z",
+  "users": [
+    {
+      "user": "<root_account>",
+      "password_enabled": false,
+      "mfa_active": true,
+      "access_keys": []
+    },
+    {
+      "user": "alice.nguyen",
+      "password_enabled": true,
+      "mfa_active": true,
+      "access_keys": [
+        { "key_num": "1", "active": true, "last_rotated": "2026-05-01T00:00:00Z" }
+      ]
+    },
+    {
+      "user": "batch-runner",
+      "password_enabled": false,
+      "mfa_active": true,
+      "access_keys": [
+        { "key_num": "1", "active": true, "last_rotated": "2026-06-01T00:00:00Z" }
+      ]
+    }
+  ]
 }

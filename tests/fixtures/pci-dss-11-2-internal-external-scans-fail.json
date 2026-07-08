@@ -1,11 +1,10 @@
 {
-  "pci_dss_11_2_internal_external_scans": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "schema": "pci-scan-report-v1",
+  "last_internal_scan_at": "2026-02-10",
+  "scan_tool": "Tenable Nessus (internal)",
+  "unresolved_criticals": 3,
+  "test_age_days": 135,
+  "signers": [],
+  "signature_verified": false
 }

@@ -6,35 +6,60 @@ metadata:
   name: pci-dss-6-4-change-control
   title: Change control processes are documented for system component changes
   framework: pci-dss
+  category: Develop and Maintain Secure Systems and Software
   severity: medium
-  tags: []
+  tags: [pci-dss, change-management, separation-of-duties, attestation]
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-6.4-change-control enforces.
+    PCI DSS Requirement 6.4 requires that changes to all system components in
+    the cardholder-data environment follow documented change-control
+    procedures (under PCI DSS v4.0 this is Requirement 6.5.1). Concord reads a
+    cosigned attestation of the change-control process, held under version
+    control in GitHub, and verifies it documents a change-approval process,
+    enforces separation of duties between the change requester and the
+    approver, defines a rollback/backout procedure, and states the testing
+    required before a change is promoted to production. The attestation must be
+    signed and reviewed at least once every 12 months.
+
+  rationale: |
+    Uncontrolled changes are a leading cause of both outages and inadvertent
+    weakening of security controls, and PCI DSS treats change control as a
+    core defense for the cardholder-data environment. Requiring a documented
+    approval workflow with enforced separation of duties prevents any single
+    person from unilaterally pushing an unreviewed change to production, while
+    a defined rollback procedure and mandatory pre-production testing ensure a
+    faulty or malicious change can be detected and reversed before it exposes
+    cardholder data. Requiring a verified signature and annual review keeps an
+    accountable owner responsible for maintaining the process.
 
   evidence:
-    - id: pci_dss_6_4_change_control
-      source: attestation
-      type: policy_attestation
+    - id: change_control_process
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-6-4-change-control-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.GITHUB_ORG}/security-attestations
+        glob: change-management/change-control.attestation.json
+        ref: main
 
   policy:
     engine: rego
     package: concord.pci_dss.pci_dss_6_4_change_control
     file: ../policies/pci-dss-6-4-change-control.rego
 
+  mappings:
+    pci_dss: ["6.4", "6.5.1"]
+    soc2: ["CC8.1"]
+    nist_800_53: ["CM-3"]
+    iso27001: ["A.8.32"]
+
   remediation:
     runbook: docs/remediation/pci-dss-6-4-change-control.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 3h
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

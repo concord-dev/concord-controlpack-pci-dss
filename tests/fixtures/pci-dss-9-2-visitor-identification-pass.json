@@ -1,11 +1,17 @@
 {
-  "pci_dss_9_2_visitor_identification": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["policies/physical"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/physical/visitor-management.yaml",
+      "owner": "Facilities Security Manager",
+      "approval_date": "2026-01-12",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 30,
+      "visitor_identification_process": "All visitors present government-issued photo ID at reception, are logged, and are issued a dated, visibly distinct temporary badge that expires at end of day and is surrendered on exit",
+      "escort_policy": "Visitors are escorted by an authorized employee at all times inside the cardholder data environment and are never left unattended near systems or media",
+      "visitor_log_retention": "Visitor logs (name, company, purpose, on-site employee, entry and exit times) retained for 12 months, exceeding the PCI DSS three-month minimum",
+      "signature_verified": true
+    }
+  ]
 }

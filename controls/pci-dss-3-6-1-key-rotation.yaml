@@ -4,35 +4,67 @@ kind: Control
 metadata:
   id: PCI-DSS-3.6.1-key-rotation
   name: pci-dss-3-6-1-key-rotation
-  title: Cryptographic keys are rotated at least annually
+  title: Cryptographic keys protecting stored account data are rotated at least annually
   framework: pci-dss
+  category: Protect Cardholder Data
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - kms
+    - key-rotation
+    - encryption
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-3.6.1-key-rotation enforces.
+    PCI DSS v4.0 Requirement 3.6.1 requires cryptographic keys used to
+    protect stored account data to be secured, and Requirement 3.7.4
+    requires those keys to be changed once they reach the end of their
+    defined cryptoperiod — a period auditors expect to be no longer than
+    one year. Concord inspects every AWS KMS key tagged pci=true and
+    confirms automatic rotation is enabled, the configured rotation period
+    is within 365 days, and the key was actually rotated within the last
+    year.
+
+  rationale: |
+    Lapsed key rotation is one of the most frequently missed PCI
+    Requirement 3 findings because it is operationally invisible: a key
+    that has stopped rotating keeps encrypting and decrypting data with no
+    outward symptom, so the gap only surfaces during a formal assessment.
+    Evaluating rotation fail-closed — treating any key whose rotation
+    cannot be positively confirmed as within the window as non-compliant —
+    ensures the control never grants false assurance from absent or
+    incomplete telemetry.
 
   evidence:
-    - id: pci_dss_3_6_1_key_rotation
+    - id: aws_kms
       source: aws
-      type: aws_resource_inventory
+      type: kms_keys
       fixture: ../tests/fixtures/pci-dss-3-6-1-key-rotation-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_3_6_1_key_rotation
+    package: concord.pci_dss.r_3_6_1
     file: ../policies/pci-dss-3-6-1-key-rotation.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-3-6-1-key-rotation.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "3.6.1"
+      - "3.7.4"
+    nist_800_53:
+      - "SC-12"
+    iso27001:
+      - "A.8.24"
+    soc2:
+      - "C1.1"
+
+  status: stable
+  blocking: true

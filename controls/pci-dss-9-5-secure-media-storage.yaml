@@ -3,38 +3,70 @@ kind: Control
 
 metadata:
   id: PCI-DSS-9.5-secure-media-storage
-  name: pci-dss-9-5-secure-media-storage
-  title: Media containing CHD is stored securely with periodic inventory
+  name: secure-media-storage-attested
+  title: Media containing cardholder data is stored securely with periodic inventory
   framework: pci-dss
+  category: Implement Strong Access Control Measures
   severity: medium
-  tags: []
+  tags:
+    - pci-dss
+    - physical-security
+    - media-protection
   owners:
-    - team: concord-dev
+    - team: it-operations
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-9.5-secure-media-storage enforces.
+    PCI DSS Requirement 9.5 requires that media containing cardholder data —
+    backup tapes, removable drives, and printed reports — be physically secured
+    and strictly controlled, including periodic inventories so that any loss or
+    theft is detected. Physical media handling is not observable through cloud
+    APIs, so Concord evaluates a signed, version-controlled attestation of the
+    media-storage program. The attestation must be current, cosign-verified,
+    describe the storage controls in force and the inventory cadence, and record
+    when the last inventory was performed.
+
+  rationale: |
+    Media is the classic PCI blind spot: a backup tape in an unlocked cabinet
+    or an uninventoried drive is cardholder data walking out the door with no
+    logical control able to stop it. QSAs test Requirement 9.5 by asking to see
+    the media inventory and the date it was last reconciled. Concord enforces
+    both the existence of storage controls and a fresh inventory (within the
+    last 12 months), so a program that was set up once and never re-inventoried
+    fails rather than passing on paper.
 
   evidence:
-    - id: pci_dss_9_5_secure_media_storage
-      source: attestation
-      type: policy_attestation
+    - id: media_storage_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-9-5-secure-media-storage-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/media-storage.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_9_5_secure_media_storage
+    package: concord.pci_dss.r_9_5
     file: ../policies/pci-dss-9-5-secure-media-storage.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-9-5-secure-media-storage.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "9.5"
+    soc2:
+      - "CC6.4"
+      - "CC6.5"
+    nist_800_53:
+      - "MP-2"
+      - "MP-4"
+      - "MP-6"
+    iso27001:
+      - "A.7.10"
+      - "A.8.10"
+
+  status: stable
+  blocking: true

@@ -4,35 +4,66 @@ kind: Control
 metadata:
   id: PCI-DSS-2.3-encrypt-non-console-admin
   name: pci-dss-2-3-encrypt-non-console-admin
-  title: Non-console administrative access is encrypted using TLS / SSH
+  title: Non-console administrative access is restricted to encrypted channels
   framework: pci-dss
+  category: Build and Maintain a Secure Network and Systems
   severity: critical
-  tags: []
+  tags:
+    - pci-dss
+    - secure-configuration
+    - encryption
+    - administrative-access
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-2.3-encrypt-non-console-admin enforces.
+    PCI DSS v4.0 Requirement 2.3 requires that all non-console administrative
+    access is encrypted using strong cryptography. This control inspects every
+    security-group ruleset and reports any rule that permits a cleartext
+    remote-administration protocol, such as Telnet, rlogin, rexec, rsh,
+    unencrypted VNC, or unencrypted X11. It also reports any rule flagged as
+    administrative that is not confirmed to be encrypted, so that services such
+    as RDP or web administration exposed without TLS are caught and rules that
+    omit their encryption status fail closed.
+  rationale: |
+    Administrative sessions carry the highest-value credentials in the
+    environment; if that traffic crosses the network in the clear, an attacker
+    who can observe it gains privileged access directly. Assessors validating
+    Requirement 2.3 look for proof that administrators reach systems only over
+    SSH, TLS, or an equivalent, and that legacy cleartext management protocols
+    are not merely discouraged but blocked at the network layer. Failing closed
+    when a rule does not affirm encryption prevents an unlabeled or misconfigured
+    administrative path from silently passing.
 
   evidence:
-    - id: pci_dss_2_3_encrypt_non_console_admin
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/pci-dss-2-3-encrypt-non-console-admin-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_2_3_encrypt_non_console_admin
+    package: concord.pci_dss.r_2_3
     file: ../policies/pci-dss-2-3-encrypt-non-console-admin.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-2-3-encrypt-non-console-admin.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "2.3"
+    nist_800_53:
+      - "AC-17(2)"
+      - "SC-8"
+    soc2:
+      - "CC6.7"
+    iso27001:
+      - "A.8.5"
+
+  status: stable
+  blocking: true

@@ -1,11 +1,21 @@
 {
-  "pci_dss_12_3_acceptable_use_policy": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["policies/governance"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/governance/acceptable-use-policy.yaml",
+      "owner": "Chief Information Security Officer",
+      "approval_date": "2026-01-20",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 30,
+      "approved_technologies": [
+        "Company-managed laptops with full-disk encryption",
+        "Approved VPN client for remote access with MFA",
+        "Corporate-issued mobile devices enrolled in MDM"
+      ],
+      "usage_rules": "Critical technologies may be used only for business purposes, only from company-managed and encrypted endpoints, only over the approved VPN, and never to store cardholder data locally; removable media is prohibited unless individually approved",
+      "explicit_approval_required": true,
+      "signature_verified": true
+    }
+  ]
 }

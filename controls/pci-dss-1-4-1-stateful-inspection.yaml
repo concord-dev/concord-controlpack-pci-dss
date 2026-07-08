@@ -4,35 +4,68 @@ kind: Control
 metadata:
   id: PCI-DSS-1.4.1-stateful-inspection
   name: pci-dss-1-4-1-stateful-inspection
-  title: Stateful inspection is enforced on all incoming and outgoing connections
+  title: Network ACLs at the trusted/untrusted boundary enforce an explicit default-deny
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Build and Maintain a Secure Network and Systems
+  severity: high
+  tags:
+    - pci-dss
+    - network-security-controls
+    - default-deny
+    - network-acl
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-1.4.1-stateful-inspection enforces.
+    PCI DSS v4.0 Requirement 1.4.1 requires that network security controls are
+    implemented between trusted and untrusted networks so that only authorized
+    connections are permitted. Stateful security groups provide connection
+    tracking, but the subnet boundary must also fail closed. This control
+    inspects the network ACLs that guard the boundary and confirms that each
+    one carries an explicit deny-all catch-all rule for both inbound and
+    outbound traffic, so any connection not expressly permitted is dropped
+    rather than relying on implicit behavior. An environment with no network
+    ACLs, or with an ACL missing the ingress or egress deny-all fallback, is
+    reported as a violation.
+  rationale: |
+    The recurring theme in Requirement 1.4 is that the boundary between trusted
+    and untrusted networks must be deliberate and deny by default. Relying on
+    AWS's implicit deny at rule 32767 leaves the posture invisible and easy to
+    undermine with a later permissive rule, so assessors look for an explicit
+    deny-all entry that documents intent and cannot be silently overridden.
+    Requiring the explicit catch-all on both directions demonstrates that the
+    NSC governing the boundary fails closed, which is the enforceable and
+    verifiable core of a stateful, default-deny network boundary.
 
   evidence:
-    - id: pci_dss_1_4_1_stateful_inspection
+    - id: network_acls
       source: aws
-      type: aws_resource_inventory
+      type: network_acls
       fixture: ../tests/fixtures/pci-dss-1-4-1-stateful-inspection-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_1_4_1_stateful_inspection
+    package: concord.pci_dss.r_1_4_1
     file: ../policies/pci-dss-1-4-1-stateful-inspection.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-1-4-1-stateful-inspection.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "1.4.1"
+    nist_800_53:
+      - "SC-7"
+      - "AC-4"
+    soc2:
+      - "CC6.6"
+    iso27001:
+      - "A.8.20"
+
+  status: stable
+  blocking: true

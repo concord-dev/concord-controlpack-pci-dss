@@ -3,38 +3,70 @@ kind: Control
 
 metadata:
   id: PCI-DSS-9.1-physical-access-controls
-  name: pci-dss-9-1-physical-access-controls
-  title: Physical access to systems storing CHD is restricted and logged
+  name: physical-access-controls-attested
+  title: Physical access to systems storing cardholder data is restricted and logged
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Implement Strong Access Control Measures
+  severity: high
+  tags:
+    - pci-dss
+    - physical-security
+    - access-control
   owners:
-    - team: concord-dev
+    - team: it-operations
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-9.1-physical-access-controls enforces.
+    PCI DSS Requirement 9.1 requires that physical access to the systems,
+    facilities, and media that store, process, or transmit cardholder data be
+    restricted to authorized personnel and that entry be monitored. Badge
+    readers, locked cages, and CCTV are not reachable as cloud telemetry, so
+    Concord evaluates a signed, version-controlled attestation of the physical
+    access program. The attestation must be current, cosign-verified, and
+    enumerate the access-control measures in force, the roles authorized for
+    entry, and how physical access is logged and retained.
+
+  rationale: |
+    Physical access to servers, network closets, or backup media that hold
+    cardholder data bypasses every logical safeguard protecting that data, and
+    QSAs routinely test Requirement 9 by asking who can enter the cardholder
+    data environment and how that entry is recorded. A documented,
+    owner-attested program that names the authorized roles, the enforcing
+    controls, and the access-log retention period gives the assessor a single
+    source of truth and forces the program to be re-reviewed at least annually.
 
   evidence:
-    - id: pci_dss_9_1_physical_access_controls
-      source: attestation
-      type: policy_attestation
+    - id: physical_access_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-9-1-physical-access-controls-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/physical-access-controls.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_9_1_physical_access_controls
+    package: concord.pci_dss.r_9_1
     file: ../policies/pci-dss-9-1-physical-access-controls.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-9-1-physical-access-controls.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "9.1"
+      - "9.2.1"
+    soc2:
+      - "CC6.4"
+    nist_800_53:
+      - "PE-2"
+      - "PE-3"
+      - "PE-6"
+    iso27001:
+      - "A.7.1"
+      - "A.7.2"
+
+  status: stable
+  blocking: true

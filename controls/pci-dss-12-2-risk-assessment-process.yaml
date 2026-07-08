@@ -3,38 +3,70 @@ kind: Control
 
 metadata:
   id: PCI-DSS-12.2-risk-assessment-process
-  name: pci-dss-12-2-risk-assessment-process
-  title: Annual risk assessment process is documented and performed
+  name: risk-assessment-process-attested
+  title: A targeted risk-assessment process is documented and performed at least annually
   framework: pci-dss
+  category: Maintain an Information Security Policy
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - governance
+    - risk-assessment
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-12.2-risk-assessment-process enforces.
+    PCI DSS Requirement 12.2 requires that acceptable use and, more broadly,
+    the organization's risk-assessment process be defined, documented, and
+    performed so that risks to the cardholder data environment are identified,
+    analyzed, and tracked to remediation at least once every 12 months and upon
+    significant change. Concord evaluates a signed, version-controlled
+    attestation of the risk-assessment program. The attestation must be
+    current, cosign-verified, describe the methodology and the scope assessed,
+    record when the last assessment was performed, and confirm that identified
+    findings are tracked.
+
+  rationale: |
+    A risk assessment that happened once and was never repeated is exactly what
+    Requirement 12.2 exists to prevent — threats, the cardholder data flow, and
+    the environment all change, and a stale assessment gives false assurance.
+    QSAs ask for the methodology, the scope, the date of the most recent
+    assessment, and evidence that findings were driven to closure. Concord
+    enforces all four, including a freshness check that fails an assessment
+    older than 12 months rather than accepting a document that merely exists.
 
   evidence:
-    - id: pci_dss_12_2_risk_assessment_process
-      source: attestation
-      type: policy_attestation
+    - id: risk_assessment_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-12-2-risk-assessment-process-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/governance/risk-assessment-process.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_12_2_risk_assessment_process
+    package: concord.pci_dss.r_12_2
     file: ../policies/pci-dss-12-2-risk-assessment-process.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-12-2-risk-assessment-process.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "12.2"
+    soc2:
+      - "CC3.1"
+      - "CC3.2"
+      - "CC9.2"
+    nist_800_53:
+      - "RA-3"
+      - "PM-9"
+    iso27001:
+      - "A.5.4"
+
+  status: stable
+  blocking: true

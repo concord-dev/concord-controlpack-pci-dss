@@ -1,8 +1,52 @@
 {
-  "pci_dss_7_3_access_control_system": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-20T12:00:00Z",
+  "identities": [
+    {
+      "name": "settlement-processor",
+      "type": "role",
+      "attached_policies": [
+        {
+          "policy_name": "SettlementReadWrite",
+          "arn": "arn:aws:iam::123456789012:policy/SettlementReadWrite",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["sqs:ReceiveMessage", "sqs:DeleteMessage"],
+                "Resource": "arn:aws:sqs:us-east-1:123456789012:settlement-queue"
+              },
+              {
+                "Effect": "Deny",
+                "Action": "s3:*",
+                "Resource": "*"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "auditor",
+      "type": "user",
+      "attached_policies": [
+        {
+          "policy_name": "SecurityAudit",
+          "arn": "arn:aws:iam::123456789012:policy/SecurityAudit",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["config:Get*", "config:Describe*"],
+                "Resource": "arn:aws:config:us-east-1:123456789012:*"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

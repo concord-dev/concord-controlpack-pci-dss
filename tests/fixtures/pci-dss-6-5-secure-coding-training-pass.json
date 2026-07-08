@@ -1,11 +1,24 @@
 {
-  "pci_dss_6_5_secure_coding_training": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["training"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "training/secure-coding.attestation.json",
+      "kind": "secure_coding_training",
+      "signature_verified": true,
+      "attested_fields": {
+        "training_program": "Mandatory annual secure software development course delivered via the SecureFlag platform to every engineer who writes or reviews code touching the cardholder-data environment",
+        "topics": [
+          "OWASP Top 10",
+          "injection prevention and parameterized queries",
+          "authentication and session management",
+          "secure handling and storage of cardholder data",
+          "cryptographic storage and key handling",
+          "input validation and output encoding"
+        ],
+        "completion_tracking": "Completions are recorded in the LMS; a quarterly report reconciles the active engineering roster against completion records and escalates overdue staff to their managers",
+        "last_delivered_at": "2026-06-02T00:00:00Z"
+      }
+    }
+  ]
 }

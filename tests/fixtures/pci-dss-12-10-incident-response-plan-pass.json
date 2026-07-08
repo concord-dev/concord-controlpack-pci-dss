@@ -1,11 +1,19 @@
 {
-  "pci_dss_12_10_incident_response_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["policies/governance"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/governance/incident-response-plan.yaml",
+      "owner": "Chief Information Security Officer",
+      "approval_date": "2026-01-20",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 30,
+      "last_tested_at": "2026-05-10",
+      "test_age_days": 52,
+      "roles_responsibilities": "Incident commander (on-call SRE lead), security lead (CISO), communications lead (Legal/PR), and forensics liaison are named with 24x7 contact details and defined authority",
+      "detection_escalation": "Alerts from the SIEM, WAF, and FIM page the on-call responder; SEV-1 (suspected cardholder data exposure) escalates to the incident commander and CISO within 15 minutes and to the acquirer and card brands per their timelines",
+      "communication_plan": "Internal notification via the incident bridge, customer status-page updates, and external notification of the acquirer, card brands, and regulators within contractually and legally required timeframes",
+      "signature_verified": true
+    }
+  ]
 }

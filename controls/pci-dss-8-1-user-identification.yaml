@@ -3,36 +3,68 @@ kind: Control
 
 metadata:
   id: PCI-DSS-8.1-user-identification
-  name: pci-dss-8-1-user-identification
+  name: unique-user-identification
   title: Every user is uniquely identified before access is granted
   framework: pci-dss
+  category: Implement Strong Access Control Measures
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - authentication
+    - iam
+    - identity
   owners:
-    - team: concord-dev
+    - team: it-security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-8.1-user-identification enforces.
+    PCI DSS v4.0 Requirement 8.1/8.2.1 requires that all users are assigned a
+    unique ID before access to system components is granted, so that actions
+    can be traced to a known individual. Concord reads the AWS IAM credential
+    report and fails any console-enabled identity whose name matches a shared
+    or generic pattern (for example "admin", "shared", "service"), because
+    such accounts cannot attribute activity to one person. It also fails the
+    root account when it is used for routine operations, since day-to-day use
+    of root breaks individual accountability.
+
+  rationale: |
+    Shared and generic logins are the classic way accountability collapses:
+    when several administrators sign in as "admin" no audit trail can place a
+    specific person at a specific action, defeating Requirements 8 and 10 at
+    once. The root account carries the same problem plus unlimited privilege,
+    so PCI expects it to be reserved for the rare tasks that require it rather
+    than routine work. The control fails closed: if the credential report is
+    absent it denies rather than assuming every identity is unique.
 
   evidence:
-    - id: pci_dss_8_1_user_identification
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/pci-dss-8-1-user-identification-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_8_1_user_identification
+    package: concord.pci_dss.user_identification
     file: ../policies/pci-dss-8-1-user-identification.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-8-1-user-identification.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "8.1"
+      - "8.2.1"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "IA-2"
+      - "AC-2"
+    cis_aws:
+      - "1.7"
+
+  status: stable
+  blocking: true

@@ -1,11 +1,50 @@
 {
-  "pci_dss_7_1_need_to_know_access": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T12:00:00Z",
+  "identities": [
+    {
+      "name": "chd-reader",
+      "type": "role",
+      "attached_policies": [
+        {
+          "policy_name": "CardholderReadOnly",
+          "arn": "arn:aws:iam::123456789012:policy/CardholderReadOnly",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["s3:GetObject", "s3:ListBucket"],
+                "Resource": [
+                  "arn:aws:s3:::chd-vault",
+                  "arn:aws:s3:::chd-vault/*"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "payments-app",
+      "type": "user",
+      "attached_policies": [
+        {
+          "policy_name": "PaymentsWrite",
+          "arn": "arn:aws:iam::123456789012:policy/PaymentsWrite",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["dynamodb:PutItem", "dynamodb:GetItem"],
+                "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/transactions"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

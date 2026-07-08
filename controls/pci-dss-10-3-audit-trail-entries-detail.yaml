@@ -4,35 +4,58 @@ kind: Control
 metadata:
   id: PCI-DSS-10.3-audit-trail-entries-detail
   name: pci-dss-10-3-audit-trail-entries-detail
-  title: Audit-trail entries include user, timestamp, event type, success/failure, origin, resource
+  title: Audit-trail entries record user, timestamp, event, origin, and are tamper-evident
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Regularly Monitor and Test Networks
+  severity: high
+  tags: [pci-dss, logging, audit-trail, cloudtrail]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-10.3-audit-trail-entries-detail enforces.
-
+    PCI DSS Requirement 10.3 requires each audit-trail entry to record the user
+    identification, type of event, date and time, success or failure indication,
+    origination of the event, and the identity of affected data or resources.
+    Concord verifies the CloudTrail configuration flags that make these fields
+    complete and trustworthy: global service events must be included so user
+    identity and origin are recorded for IAM and STS actions, management events
+    must be recorded so the event source and name are captured, and log-file
+    validation must be enabled so entries are tamper-evident. The check fails
+    closed when no trail is present.
+  rationale: |
+    CloudTrail records the six required fields in every event, but only when the
+    trail is configured to capture the relevant activity and to protect the
+    integrity of what it records. A trail that excludes global service events
+    silently drops the user identity and origin for IAM, STS, and other global
+    actions; a trail without management events omits the event source and name;
+    and a trail without log-file validation cannot prove its entries were not
+    altered after the fact, which undermines their evidentiary value. Because an
+    incomplete or unverifiable entry cannot satisfy Requirement 10.3, Concord
+    fails closed if any of these flags is missing.
   evidence:
-    - id: pci_dss_10_3_audit_trail_entries_detail
+    - id: audit_trail_detail
       source: aws
-      type: aws_resource_inventory
+      type: audit_trail_status
       fixture: ../tests/fixtures/pci-dss-10-3-audit-trail-entries-detail-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_10_3_audit_trail_entries_detail
+    package: concord.pci_dss.r_10_3
     file: ../policies/pci-dss-10-3-audit-trail-entries-detail.rego
+
+  mappings:
+    pci_dss: ["10.3", "10.3.1", "10.3.2"]
+    soc2: ["CC7.2", "CC7.3"]
+    nist_800_53: ["AU-3", "AU-9"]
+    cis_aws: ["3.2"]
 
   remediation:
     runbook: docs/remediation/pci-dss-10-3-audit-trail-entries-detail.md
     auto_fix: false
     estimated_effort: 30m
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

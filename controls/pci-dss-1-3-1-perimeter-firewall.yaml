@@ -4,35 +4,66 @@ kind: Control
 metadata:
   id: PCI-DSS-1.3.1-perimeter-firewall
   name: pci-dss-1-3-1-perimeter-firewall
-  title: Perimeter firewall is installed between trusted and untrusted networks
+  title: No private or cardholder-data-environment resource is directly reachable from untrusted networks
   framework: pci-dss
+  category: Build and Maintain a Secure Network and Systems
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - network-security-controls
+    - cde-isolation
+    - perimeter
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-1.3.1-perimeter-firewall enforces.
+    PCI DSS v4.0 Requirement 1.3.1 requires that inbound traffic to the
+    cardholder-data environment (CDE) is restricted to only necessary traffic
+    and that all other traffic is specifically denied. This control inspects
+    every security group and, for those protecting a private- or CDE-tier
+    resource, confirms that no ingress rule permits direct access from an
+    untrusted network (0.0.0.0/0 or ::/0). Any private or CDE security group
+    with a direct Internet ingress rule is reported as a perimeter violation.
+  rationale: |
+    Direct Internet reachability of a database, application backend, or any
+    CDE component is one of the highest-signal findings a QSA can identify: it
+    means the perimeter that is supposed to sit between untrusted networks and
+    the cardholder data is either missing or misconfigured. By classifying each
+    security group by the tier it protects and requiring that private and CDE
+    tiers have zero direct ingress from the Internet, this control enforces the
+    "specifically deny all other traffic" intent of Requirement 1.3.1 rather
+    than merely checking a handful of well-known ports.
 
   evidence:
-    - id: pci_dss_1_3_1_perimeter_firewall
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/pci-dss-1-3-1-perimeter-firewall-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_1_3_1_perimeter_firewall
+    package: concord.pci_dss.r_1_3_1
     file: ../policies/pci-dss-1-3-1-perimeter-firewall.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-1-3-1-perimeter-firewall.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "1.3.1"
+      - "1.3.2"
+    nist_800_53:
+      - "SC-7"
+      - "SC-7(3)"
+    soc2:
+      - "CC6.6"
+    iso27001:
+      - "A.8.22"
+
+  status: stable
+  blocking: true

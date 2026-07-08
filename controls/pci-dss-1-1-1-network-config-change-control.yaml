@@ -4,37 +4,70 @@ kind: Control
 metadata:
   id: PCI-DSS-1.1.1-network-config-change-control
   name: pci-dss-1-1-1-network-config-change-control
-  title: Changes to network connections and firewall configs are documented and approved
+  title: A formal, approved change-control process governs network and firewall configuration changes
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Build and Maintain a Secure Network and Systems
+  severity: high
+  tags:
+    - pci-dss
+    - network-security-controls
+    - change-control
+    - governance
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-1.1.1-network-config-change-control enforces.
+    PCI DSS v4.0 Requirement 1.1.1 requires that all security policies and
+    operational procedures for managing network security controls are
+    documented, kept current, in use, and known to affected parties, including
+    a formal process for approving and testing changes to network connections
+    and to firewall and router configurations. This control reads a signed
+    change-control procedure from the policy repository and confirms it defines
+    the approval process, the roles authorized to approve changes, the ticket
+    referencing convention that links each change to its record, and the date
+    it was last reviewed. The procedure must have been reviewed within the last
+    365 days and carry a verified signature.
+  rationale: |
+    Undocumented or unapproved firewall and routing changes are a leading cause
+    of the misconfigurations that this requirement exists to prevent, and they
+    are exactly what an assessor probes when validating Requirement 1.1.1.
+    A credible procedure names who can approve a change, how each change is
+    ticketed and traceable, and proves it is a living document through recent
+    review and a valid signature. Checking these specific fields rather than
+    the mere existence of a file distinguishes a real, auditable control from an
+    aspirational policy statement.
 
   evidence:
-    - id: pci_dss_1_1_1_network_config_change_control
-      source: attestation
-      type: policy_attestation
+    - id: change_control_procedure
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-1-1-1-network-config-change-control-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/network-change-control-procedure.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_1_1_1_network_config_change_control
+    package: concord.pci_dss.r_1_1_1
     file: ../policies/pci-dss-1-1-1-network-config-change-control.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-1-1-1-network-config-change-control.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "1.1.1"
+      - "1.2.2"
+    nist_800_53:
+      - "CM-3"
+      - "SA-3"
+    soc2:
+      - "CC8.1"
+    iso27001:
+      - "A.8.32"
+
+  status: stable
+  blocking: true

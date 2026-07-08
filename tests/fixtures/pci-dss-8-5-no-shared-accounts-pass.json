@@ -1,11 +1,28 @@
 {
-  "pci_dss_8_5_no_shared_accounts": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "generated_at": "2026-06-20T09:55:00Z",
+  "users": [
+    {
+      "user": "alice.nguyen",
+      "password_enabled": true,
+      "mfa_active": true,
+      "access_keys": [
+        { "key_num": "1", "active": true, "last_rotated": "2026-05-01T00:00:00Z" }
+      ]
+    },
+    {
+      "user": "bob.carter",
+      "password_enabled": true,
+      "mfa_active": true,
+      "access_keys": []
+    },
+    {
+      "user": "payments-pipeline-alice",
+      "password_enabled": false,
+      "mfa_active": false,
+      "access_keys": [
+        { "key_num": "1", "active": true, "last_rotated": "2026-06-01T00:00:00Z" }
+      ]
+    }
+  ]
 }

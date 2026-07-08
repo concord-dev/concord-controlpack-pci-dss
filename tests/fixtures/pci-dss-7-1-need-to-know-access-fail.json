@@ -1,11 +1,47 @@
 {
-  "pci_dss_7_1_need_to_know_access": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "fetched_at": "2026-06-20T12:00:00Z",
+  "identities": [
+    {
+      "name": "developer-jsmith",
+      "type": "user",
+      "attached_policies": [
+        {
+          "policy_name": "AdministratorAccess",
+          "arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+          "is_aws_managed": true,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": "*",
+                "Resource": "*"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "legacy-batch",
+      "type": "role",
+      "attached_policies": [
+        {
+          "policy_name": "LegacyFullAccess",
+          "arn": "arn:aws:iam::123456789012:policy/LegacyFullAccess",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["*"],
+                "Resource": ["*"]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

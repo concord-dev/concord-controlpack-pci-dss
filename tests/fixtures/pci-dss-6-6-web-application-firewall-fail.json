@@ -1,8 +1,20 @@
 {
-  "pci_dss_6_6_web_application_firewall": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "resources": [
+    {
+      "arn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/cde-public-alb/50dc6c495c0c9188",
+      "type": "application_load_balancer",
+      "scheme": "internet-facing",
+      "public_facing": true,
+      "web_acl_associated": false,
+      "web_acl_arn": ""
+    },
+    {
+      "arn": "arn:aws:cloudfront::123456789012:distribution/E2QWERTYUIOP12",
+      "type": "cloudfront_distribution",
+      "scheme": "internet-facing",
+      "public_facing": true,
+      "web_acl_associated": true,
+      "web_acl_arn": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/cde-cdn-acl/e5f6a7b8-9999-8888-7777-666655554444"
+    }
+  ]
 }

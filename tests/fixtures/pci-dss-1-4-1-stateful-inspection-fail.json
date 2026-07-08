@@ -1,8 +1,24 @@
 {
-  "pci_dss_1_4_1_stateful_inspection": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-18T08:30:00Z",
+  "acls": [
+    {
+      "id": "acl-cde",
+      "vpc_id": "vpc-cde",
+      "is_default": false,
+      "entries": [
+        {"rule_number": 100, "egress": false, "protocol": "tcp", "from_port": 443, "to_port": 443, "cidr": "10.20.0.0/16", "action": "allow"},
+        {"rule_number": 110, "egress": false, "protocol": "tcp", "from_port": 22, "to_port": 22, "cidr": "10.0.0.0/8", "action": "allow"},
+        {"rule_number": 100, "egress": true, "protocol": "-1", "cidr": "0.0.0.0/0", "action": "deny"}
+      ]
+    },
+    {
+      "id": "acl-legacy",
+      "vpc_id": "vpc-legacy",
+      "is_default": true,
+      "entries": [
+        {"rule_number": 100, "egress": false, "protocol": "-1", "cidr": "0.0.0.0/0", "action": "allow"},
+        {"rule_number": 100, "egress": true, "protocol": "-1", "cidr": "0.0.0.0/0", "action": "allow"}
+      ]
+    }
+  ]
 }

@@ -6,35 +6,63 @@ metadata:
   name: pci-dss-3-2-no-store-sensitive-authentication-data
   title: Sensitive authentication data is not stored after authorization
   framework: pci-dss
+  category: Protect Cardholder Data
   severity: critical
-  tags: []
+  tags:
+    - pci-dss
+    - sensitive-authentication-data
+    - data-protection
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-3.2-no-store-sensitive-authentication-data enforces.
+    PCI DSS v4.0 Requirement 3.2 (and 3.3.1) prohibits storing sensitive
+    authentication data — full track data, card verification codes (CAV2,
+    CVC2, CVV2, CID), and PINs / PIN blocks — after authorization, even when
+    encrypted. Because no single cloud API reports "SAD is absent
+    everywhere", Concord verifies a signed engineering attestation that the
+    prohibition is enforced, the cardholder data flow has been reviewed, and
+    a scanning tool actively searches for prohibited SAD.
+
+  rationale: |
+    Stored SAD is the highest-severity failure in PCI Requirement 3: it is
+    exactly the data that lets an attacker clone a card, and its retention
+    is one of the leading causes of catastrophic breaches. A pure
+    point-in-time cloud scan cannot prove a negative across every log,
+    backup, and datastore, so the defensible evidence is a fresh, signed
+    attestation backed by continuous scanning — and the control fails closed
+    unless the prohibition is explicitly attested as enforced.
 
   evidence:
-    - id: pci_dss_3_2_no_store_sensitive_authentication_data
-      source: attestation
-      type: policy_attestation
+    - id: sad_policy
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-3-2-no-store-sensitive-authentication-data-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/pci/sensitive-authentication-data.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_3_2_no_store_sensitive_authentication_data
+    package: concord.pci_dss.r_3_2
     file: ../policies/pci-dss-3-2-no-store-sensitive-authentication-data.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-3-2-no-store-sensitive-authentication-data.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "3.2"
+      - "3.3.1"
+    iso27001:
+      - "A.8.10"
+    soc2:
+      - "C1.1"
+
+  status: stable
+  blocking: true

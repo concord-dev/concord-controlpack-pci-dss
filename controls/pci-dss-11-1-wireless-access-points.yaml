@@ -6,35 +6,56 @@ metadata:
   name: pci-dss-11-1-wireless-access-points
   title: Wireless access points are tested at least quarterly to detect rogues
   framework: pci-dss
+  category: Regularly Monitor and Test Networks
   severity: medium
-  tags: []
+  tags: [pci-dss, wireless, rogue-ap, attestation]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-11.1-wireless-access-points enforces.
-
+    PCI DSS Requirement 11.1 requires processes and mechanisms to test for the
+    presence of unauthorized (rogue) wireless access points at least once every
+    three months, and to identify and respond to any that are found. Because
+    rogue-AP detection is a physical and RF activity with no cloud telemetry,
+    Concord evaluates a signed structured attestation of the testing program. The
+    attestation must declare the test cadence, the date of the last test, the
+    detection methodology, and the responsible role, must be no older than 92
+    days, and must carry a verified signature.
+  rationale: |
+    An unauthorized wireless access point plugged into the cardholder data
+    environment bypasses every perimeter control, so PCI DSS mandates recurring
+    detection on a quarterly cadence. There is no AWS or code-repository signal
+    that evidences a physical wireless sweep, so a structured, signed attestation
+    from an accountable owner is the appropriate and auditable control. Concord
+    enforces that the attestation is complete, recent (within one quarter), on an
+    acceptable cadence, and cryptographically signed, so a stale, unsigned, or
+    incomplete statement cannot pass and give false assurance.
   evidence:
-    - id: pci_dss_11_1_wireless_access_points
+    - id: rogue_ap_testing
       source: attestation
-      type: policy_attestation
+      type: structured_attestation
       fixture: ../tests/fixtures/pci-dss-11-1-wireless-access-points-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        schema: rogue-ap-testing-v1
+        signers:
+          - ciso@acme.com
+        max_age_days: 92
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_11_1_wireless_access_points
+    package: concord.pci_dss.r_11_1
     file: ../policies/pci-dss-11-1-wireless-access-points.rego
+
+  mappings:
+    pci_dss: ["11.1", "11.1.1", "11.1.2"]
+    soc2: ["CC7.1"]
+    nist_800_53: ["SI-4", "AC-18"]
 
   remediation:
     runbook: docs/remediation/pci-dss-11-1-wireless-access-points.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1h
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

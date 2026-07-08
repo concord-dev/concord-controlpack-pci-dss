@@ -3,38 +3,75 @@ kind: Control
 
 metadata:
   id: PCI-DSS-12.10-incident-response-plan
-  name: pci-dss-12-10-incident-response-plan
-  title: Incident response plan is documented, tested, and reviewed
+  name: incident-response-plan-attested
+  title: An incident response plan is documented, tested, and reviewed at least annually
   framework: pci-dss
+  category: Maintain an Information Security Policy
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - governance
+    - incident-response
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-12.10-incident-response-plan enforces.
+    PCI DSS Requirement 12.10 requires an incident response plan to be
+    documented and ready to be activated immediately in the event of a suspected
+    or confirmed breach of cardholder data, with defined roles, detection and
+    escalation procedures, and a communication plan, and it must be reviewed and
+    tested at least once every 12 months. Concord evaluates a signed,
+    version-controlled attestation of the incident response plan. The
+    attestation must be current, cosign-verified, name the roles and their
+    responsibilities, describe detection and escalation, describe the
+    communication plan, and record when the plan was last tested and reviewed.
+
+  rationale: |
+    An incident response plan that has never been tested is not a plan, it is a
+    hope — and a breach is the worst time to discover the escalation path is
+    wrong or no one owns notification. Requirement 12.10 is explicit that the
+    plan be exercised at least annually, so Concord enforces both a review
+    freshness and a test freshness check in addition to the required content.
+    QSAs test 12.10 by asking for the plan, the roster of responders, and the
+    date of the last tabletop or live test; failing a plan that is stale or
+    untested prevents the false assurance of a document that exists on paper
+    only.
 
   evidence:
-    - id: pci_dss_12_10_incident_response_plan
-      source: attestation
-      type: policy_attestation
+    - id: incident_response_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-12-10-incident-response-plan-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/governance/incident-response-plan.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_12_10_incident_response_plan
+    package: concord.pci_dss.r_12_10
     file: ../policies/pci-dss-12-10-incident-response-plan.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-12-10-incident-response-plan.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "12.10"
+      - "12.10.1"
+    soc2:
+      - "CC7.3"
+      - "CC7.4"
+      - "CC7.5"
+    nist_800_53:
+      - "IR-1"
+      - "IR-4"
+      - "IR-8"
+    iso27001:
+      - "A.5.24"
+      - "A.5.26"
+
+  status: stable
+  blocking: true

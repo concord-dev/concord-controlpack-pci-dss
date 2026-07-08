@@ -1,8 +1,12 @@
 {
-  "pci_dss_10_7_audit_trail_retention": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
+  "fetched_at": "2026-06-20T00:00:00Z",
+  "log_groups": [
+    { "name": "/aws/cloudtrail/org-management-trail", "is_audit_log": true, "retention_in_days": 400 },
+    { "name": "/aws/vpc/flowlogs", "is_audit_log": true, "retention_in_days": 365 }
+  ],
+  "s3_lifecycle": {
+    "bucket": "acme-cloudtrail-archive",
+    "expiration_days": 730,
+    "transition_to_archive_days": 90
   }
 }

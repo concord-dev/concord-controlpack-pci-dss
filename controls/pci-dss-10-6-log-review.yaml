@@ -4,37 +4,56 @@ kind: Control
 metadata:
   id: PCI-DSS-10.6-log-review
   name: pci-dss-10-6-log-review
-  title: Logs and security events are reviewed at least daily for anomalies
+  title: Security events are reviewed through automated CloudWatch metric alarms
   framework: pci-dss
-  severity: medium
-  tags: []
+  category: Regularly Monitor and Test Networks
+  severity: high
+  tags: [pci-dss, logging, monitoring, cloudwatch]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-10.6-log-review enforces.
-
+    PCI DSS Requirement 10.6 requires that logs and security events be reviewed
+    to identify anomalies or suspicious activity, and permits automated
+    mechanisms to perform that review. Concord verifies that AWS CloudWatch
+    metric alarms exist for the required security-event categories (unauthorized
+    API calls, root-account usage, IAM policy changes, and failed console
+    sign-ins) and that each alarm has an active notification action so detected
+    events are surfaced to responders. Each uncovered category is reported
+    separately.
+  rationale: |
+    Daily manual review of raw logs does not scale, so PCI DSS explicitly allows
+    automated log-review tools; CloudWatch metric filters paired with alarms are
+    the canonical AWS implementation and align with the CIS AWS Foundations
+    monitoring benchmarks. An alarm that exists but has no notification action is
+    equivalent to no review at all, because a triggered condition never reaches a
+    human, so Concord requires both an alarm and a wired-up action for every
+    required event category. Missing coverage of any category means a whole class
+    of suspicious activity would go unreviewed, so the control fails closed.
   evidence:
-    - id: pci_dss_10_6_log_review
-      source: attestation
-      type: policy_attestation
+    - id: log_review
+      source: aws
+      type: cloudwatch_metric_alarms
       fixture: ../tests/fixtures/pci-dss-10-6-log-review-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_10_6_log_review
+    package: concord.pci_dss.r_10_6
     file: ../policies/pci-dss-10-6-log-review.rego
+
+  mappings:
+    pci_dss: ["10.6", "10.6.1"]
+    soc2: ["CC7.2", "CC7.3"]
+    nist_800_53: ["AU-6", "SI-4"]
+    cis_aws: ["4.1", "4.3", "4.4"]
 
   remediation:
     runbook: docs/remediation/pci-dss-10-6-log-review.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 45m
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

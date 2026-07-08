@@ -3,38 +3,71 @@ kind: Control
 
 metadata:
   id: PCI-DSS-12.3-acceptable-use-policy
-  name: pci-dss-12-3-acceptable-use-policy
-  title: Acceptable use policy for critical technologies is documented and signed
+  name: acceptable-use-policy-attested
+  title: An acceptable use policy for critical technologies is documented and signed
   framework: pci-dss
-  severity: low
-  tags: []
+  category: Maintain an Information Security Policy
+  severity: medium
+  tags:
+    - pci-dss
+    - governance
+    - acceptable-use
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-12.3-acceptable-use-policy enforces.
+    PCI DSS Requirement 12.3 requires acceptable use policies for critical
+    technologies — such as remote access, wireless, removable media, laptops,
+    and messaging — to be defined and enforced, including explicit approval by
+    authorized parties before those technologies are used. Concord evaluates a
+    signed, version-controlled attestation of the acceptable use policy. The
+    attestation must be current, cosign-verified, enumerate the approved
+    technologies and their usage rules, and confirm that explicit approval is
+    required before a critical technology is deployed.
+
+  rationale: |
+    Critical technologies are the ones most often abused to reach cardholder
+    data — an unapproved remote-access tool or personal USB drive can bypass
+    the entire control set. Requirement 12.3 forces the organization to decide,
+    in writing, which technologies are permitted, the rules for using them, and
+    that a named authority must approve their use. Capturing that as a signed,
+    annually reviewed artifact gives the assessor a definitive list rather than
+    tribal knowledge, and the explicit-approval flag makes the approval
+    requirement machine-checkable.
 
   evidence:
-    - id: pci_dss_12_3_acceptable_use_policy
-      source: attestation
-      type: policy_attestation
+    - id: acceptable_use_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-12-3-acceptable-use-policy-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/governance/acceptable-use-policy.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_12_3_acceptable_use_policy
+    package: concord.pci_dss.r_12_3
     file: ../policies/pci-dss-12-3-acceptable-use-policy.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-12-3-acceptable-use-policy.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "12.3"
+      - "12.3.1"
+    soc2:
+      - "CC1.1"
+      - "CC2.2"
+    nist_800_53:
+      - "PL-4"
+      - "AC-20"
+    iso27001:
+      - "A.5.10"
+      - "A.8.1"
+
+  status: stable
+  blocking: true

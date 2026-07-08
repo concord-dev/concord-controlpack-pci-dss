@@ -1,11 +1,18 @@
 {
-  "pci_dss_12_2_risk_assessment_process": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["policies/governance"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/governance/risk-assessment-process.yaml",
+      "owner": "Chief Information Security Officer",
+      "approval_date": "2026-01-20",
+      "last_reviewed_at": "2026-06-01",
+      "last_assessment_at": "2026-05-15",
+      "assessment_age_days": 47,
+      "methodology": "Targeted risk analysis per PCI DSS 12.3.1 using a qualitative likelihood-by-impact matrix, supplemented by an annual enterprise risk assessment scoped to the cardholder data environment",
+      "scope": "All people, processes, and technologies in the cardholder data environment, including connected-to and security-impacting systems",
+      "findings_tracked": true,
+      "signature_verified": true
+    }
+  ]
 }

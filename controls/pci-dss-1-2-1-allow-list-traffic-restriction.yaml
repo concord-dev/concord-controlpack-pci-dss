@@ -4,35 +4,66 @@ kind: Control
 metadata:
   id: PCI-DSS-1.2.1-allow-list-traffic-restriction
   name: pci-dss-1-2-1-allow-list-traffic-restriction
-  title: Network ACLs and security groups restrict traffic to only what is necessary
+  title: Security-group rulesets restrict inbound Internet traffic to an allow-list of necessary services
   framework: pci-dss
+  category: Build and Maintain a Secure Network and Systems
   severity: high
-  tags: []
+  tags:
+    - pci-dss
+    - network-security-controls
+    - ingress
+    - allow-list
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-1.2.1-allow-list-traffic-restriction enforces.
+    PCI DSS v4.0 Requirement 1.2.1 requires that configuration standards for
+    network security control (NSC) rulesets are defined and implemented so that
+    only necessary traffic is permitted and all other traffic is denied. This
+    control inspects every security-group ruleset and confirms that inbound
+    rules open to the untrusted Internet (0.0.0.0/0) are limited to an explicit
+    allow-list of necessary public services. Any Internet-facing rule targeting
+    a port outside the allow-list, spanning a port range, or omitting a port
+    bound (an "all traffic" rule) is reported as a violation.
+  rationale: |
+    An allow-list posture is the difference between a deliberately maintained
+    ruleset and a permissive one that accreted over time. Assessors validating
+    Requirement 1.2.1 expect to see that only justified, documented services are
+    reachable from untrusted networks and that everything else is denied by
+    default. Evaluating each rule against a small allow-list of necessary public
+    ports (HTTP/HTTPS front doors) surfaces the broad "0.0.0.0/0 to any port"
+    or wide-range rules that most often expose the cardholder-data environment.
 
   evidence:
-    - id: pci_dss_1_2_1_allow_list_traffic_restriction
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/pci-dss-1-2-1-allow-list-traffic-restriction-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_1_2_1_allow_list_traffic_restriction
+    package: concord.pci_dss.r_1_2_1
     file: ../policies/pci-dss-1-2-1-allow-list-traffic-restriction.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-1-2-1-allow-list-traffic-restriction.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "1.2.1"
+      - "1.2.5"
+    nist_800_53:
+      - "AC-4"
+      - "SC-7"
+    soc2:
+      - "CC6.6"
+    iso27001:
+      - "A.8.20"
+
+  status: stable
+  blocking: true

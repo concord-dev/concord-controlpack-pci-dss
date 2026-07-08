@@ -1,20 +1,41 @@
-package concord.pci_dss.pci_dss_10_6_log_review
+package concord.pci_dss.r_10_6
 
 import rego.v1
-import data.concord.lib.attestation
-import data.concord.lib.evidence
 
-deny contains msg if {
-	not evidence.present(input, "pci_dss_10_6_log_review")
-	msg := "PCI-DSS-10.6-log-review: no signed attestation submitted"
+# PCI DSS Requirement 10.6 — security events are reviewed for anomalies.
+# Concord verifies CloudWatch metric alarms (an accepted automated review
+# mechanism) cover every required security-event category and that each alarm
+# has a wired-up notification action. Fail closed when no evidence is present.
+
+required_categories := {
+	"unauthorized_api_calls",
+	"root_account_usage",
+	"iam_policy_changes",
+	"console_signin_failures",
 }
 
 deny contains msg if {
-	not attestation.not_expired(input.pci_dss_10_6_log_review)
-	msg := sprintf("PCI-DSS-10.6-log-review: attestation expired (expires_at=%s)", [input.pci_dss_10_6_log_review.expires_at])
+	not input.log_review
+	msg := "no CloudWatch metric-alarm evidence collected"
 }
 
 deny contains msg if {
-	not attestation.fresh(input.pci_dss_10_6_log_review, 365)
-	msg := sprintf("PCI-DSS-10.6-log-review: attestation not reviewed in 365 days (last_review_at=%s)", [input.pci_dss_10_6_log_review.last_review_at])
+	input.log_review
+	some cat in required_categories
+	not covered(cat)
+	msg := sprintf("no CloudWatch metric alarm with an active notification reviews security-event category %q (PCI DSS Requirement 10.6)", [cat])
+}
+
+deny contains msg if {
+	some a in input.log_review.metric_alarms
+	a.alarm_configured == true
+	count(a.alarm_actions) == 0
+	msg := sprintf("CloudWatch metric alarm %q has no notification action; %q events would not surface for review (PCI DSS Requirement 10.6.1)", [a.name, a.covers])
+}
+
+covered(cat) if {
+	some a in input.log_review.metric_alarms
+	a.covers == cat
+	a.alarm_configured == true
+	count(a.alarm_actions) > 0
 }

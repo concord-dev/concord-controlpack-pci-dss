@@ -3,38 +3,73 @@ kind: Control
 
 metadata:
   id: PCI-DSS-9.2-visitor-identification
-  name: pci-dss-9-2-visitor-identification
-  title: Visitors are identified, escorted, and access is logged in CDE
+  name: visitor-identification-attested
+  title: Visitors are identified, escorted, and logged within the cardholder data environment
   framework: pci-dss
-  severity: low
-  tags: []
+  category: Implement Strong Access Control Measures
+  severity: medium
+  tags:
+    - pci-dss
+    - physical-security
+    - visitor-management
   owners:
-    - team: concord-dev
+    - team: it-operations
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-9.2-visitor-identification enforces.
+    PCI DSS Requirement 9.2 requires physical access controls that manage
+    entry into facilities and systems containing cardholder data, including
+    the handling of visitors who must be identified before being granted
+    access, escorted at all times within the cardholder data environment, and
+    recorded in a visitor log. Reception desks and paper or badge visitor logs
+    are not observable as cloud telemetry, so Concord evaluates a signed,
+    version-controlled attestation of the visitor-management program. The
+    attestation must be current, cosign-verified, and describe how visitors are
+    identified, the escort policy that applies inside the CDE, and how long the
+    visitor log is retained.
+
+  rationale: |
+    Unescorted or unrecorded visitors are one of the most common physical
+    findings a QSA raises, because a visitor with unsupervised access to the
+    cardholder data environment can tamper with devices, read screens, or
+    remove media without any trace. PCI DSS expects visitors to be
+    distinguishable from personnel, escorted throughout, and captured in a log
+    retained for at least three months. Forcing those commitments into a
+    signed, annually reviewed artifact gives the assessor evidence the program
+    exists and is maintained rather than assumed.
 
   evidence:
-    - id: pci_dss_9_2_visitor_identification
-      source: attestation
-      type: policy_attestation
+    - id: visitor_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-9-2-visitor-identification-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/visitor-management.yaml"
 
   policy:
     engine: rego
-    package: concord.pci_dss.pci_dss_9_2_visitor_identification
+    package: concord.pci_dss.r_9_2
     file: ../policies/pci-dss-9-2-visitor-identification.rego
 
   remediation:
     runbook: docs/remediation/pci-dss-9-2-visitor-identification.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    pci_dss:
+      - "9.2"
+      - "9.3"
+    soc2:
+      - "CC6.4"
+    nist_800_53:
+      - "PE-2"
+      - "PE-3"
+      - "PE-8"
+    iso27001:
+      - "A.7.2"
+      - "A.7.6"
+
+  status: stable
+  blocking: true

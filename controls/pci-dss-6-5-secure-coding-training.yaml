@@ -6,35 +6,63 @@ metadata:
   name: pci-dss-6-5-secure-coding-training
   title: Developers receive secure-coding training at least annually
   framework: pci-dss
+  category: Develop and Maintain Secure Systems and Software
   severity: medium
-  tags: []
+  tags: [pci-dss, secure-coding, training, attestation]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what PCI-DSS-6.5-secure-coding-training enforces.
+    PCI DSS Requirement 6.5 requires software-development personnel who work
+    on bespoke and custom software to be trained at least once every 12 months
+    in secure software design and secure coding techniques, including how to
+    prevent common software attacks (under PCI DSS v4.0 this is Requirement
+    6.2.2). Concord reads a cosigned attestation of the secure-coding training
+    program, held under version control in GitHub, and verifies it names the
+    training program, the security topics covered (for example the OWASP Top
+    10), how completion is tracked, and the date training was last delivered.
+    The attestation must be signed and the most recent delivery must be within
+    the last 365 days.
+
+  rationale: |
+    Most application-layer vulnerabilities that expose cardholder data, such
+    as injection and broken access control, originate in code written by
+    developers who were never trained to avoid them. Requiring documented,
+    annually refreshed secure-coding training that explicitly covers the OWASP
+    Top 10 and secure handling of cardholder data raises the baseline of every
+    engineer touching the environment, and requiring completion tracking makes
+    coverage auditable rather than aspirational. Concord denies the control
+    when training has lapsed beyond one year, when required program details are
+    missing, or when the attestation is unsigned, because stale or unverifiable
+    training gives false assurance that developers are current on today's
+    threats.
 
   evidence:
-    - id: pci_dss_6_5_secure_coding_training
-      source: attestation
-      type: policy_attestation
+    - id: secure_coding_training
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/pci-dss-6-5-secure-coding-training-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.GITHUB_ORG}/security-attestations
+        glob: training/secure-coding.attestation.json
+        ref: main
 
   policy:
     engine: rego
     package: concord.pci_dss.pci_dss_6_5_secure_coding_training
     file: ../policies/pci-dss-6-5-secure-coding-training.rego
 
+  mappings:
+    pci_dss: ["6.5", "6.2.2"]
+    soc2: ["CC1.4"]
+    nist_800_53: ["AT-3", "SA-11"]
+    iso27001: ["A.6.3", "A.8.28"]
+
   remediation:
     runbook: docs/remediation/pci-dss-6-5-secure-coding-training.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true
