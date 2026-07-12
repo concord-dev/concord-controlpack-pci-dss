@@ -1,10 +1,13 @@
 {
+  "kind": "scan_report",
   "fetched_at": "2026-06-25T10:00:00Z",
   "schema": "pci-scan-report-v1",
-  "last_internal_scan_at": "2026-02-10",
-  "scan_tool": "Tenable Nessus (internal)",
-  "unresolved_criticals": 3,
-  "test_age_days": 135,
   "signers": [],
-  "signature_verified": false
+  "signature_verified": false,
+  "attested_fields": {
+    "last_internal_scan_at": "2026-02-10",
+    "scan_tool": "Tenable Nessus (internal)",
+    "unresolved_criticals": 3,
+    "test_age_days": 135
+  }
 }

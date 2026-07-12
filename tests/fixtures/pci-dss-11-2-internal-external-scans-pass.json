@@ -1,12 +1,15 @@
 {
+  "kind": "scan_report",
   "fetched_at": "2026-06-25T10:00:00Z",
   "schema": "pci-scan-report-v1",
-  "last_internal_scan_at": "2026-06-18",
-  "last_external_scan_at": "2026-06-20",
-  "scan_tool": "Qualys ASV (external), Tenable Nessus (internal)",
-  "unresolved_criticals": 0,
-  "test_age_days": 20,
   "signers": ["security-lead@acme.com"],
   "signature_verified": true,
-  "approving_authority": "Acme Payments CISO"
+  "approving_authority": "Acme Payments CISO",
+  "attested_fields": {
+    "last_internal_scan_at": "2026-06-18",
+    "last_external_scan_at": "2026-06-20",
+    "scan_tool": "Qualys ASV (external), Tenable Nessus (internal)",
+    "unresolved_criticals": 0,
+    "test_age_days": 20
+  }
 }
