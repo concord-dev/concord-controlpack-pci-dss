@@ -1,1 +1,11 @@
-{"users": [{"email": "alice@acme.com", "status": "ACTIVE", "has_strong_mfa": true}]}
+{
+  "users": [
+    {
+      "email": "alice@acme.com",
+      "status": "ACTIVE",
+      "has_strong_mfa": true,
+      "id": "00u00000000"
+    }
+  ],
+  "fetched_at": "2026-06-06T10:00:00Z"
+}
