@@ -58,6 +58,16 @@ warn contains msg if {
 	msg := sprintf("PCI DSS 3.6.1: key %q is pending deletion — confirm no stored account data still depends on it", [k.key_id])
 }
 
+# doc 31 §4 — no fail-open tag gates: a resource with no 'pci' tag is neither confirmed in-scope
+# nor out-of-scope, so every deny above skips it and it would pass silently.
+# Warn on the unclassified resource instead of ignoring it.
+
+warn contains msg if {
+	some resource in input.aws_kms.keys
+	not classified(resource)
+	msg := sprintf("KMS key %q has no pci tag, so this control's checks did not apply to it — tag pci=true to bring it into cardholder-data (PCI) scope or pci=false to confirm it is out of scope", [resource.key_id])
+}
+
 rotated_within_window(k) if {
 	k.last_rotated_at
 	rotated_ns := time.parse_rfc3339_ns(k.last_rotated_at)
@@ -68,3 +78,7 @@ rotated_within_window(k) if {
 is_pci(k) if {
 	k.tags.pci == "true"
 }
+
+classified(resource) if resource.tags.pci == "true"
+
+classified(resource) if resource.tags.pci == "false"
